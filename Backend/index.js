@@ -3,20 +3,61 @@ const cors = require("cors");
 const app = express();
 const dotenv = require('dotenv');
 dotenv.config();
-const connectDB = require("./utils/db");
-const cookieParser = require("cookie-parser");
 const PORT = process.env.PORT;
+const http = require('http');
+const { Server } = require('socket.io');
+const cookieParser = require("cookie-parser");
+
+const connectDB = require("./utils/db");
+
+//routes
 const authRoutes = require("./routes/auth");
 
-app.use(cors());
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:5173', // client port
+    credentials: true,
+  },  
+});
+
+//middlewares
+const userAuth = require("./middleware/userAuth");
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
+io.on('connection', (socket) => {
+  console.log(`Socket connected: ${socket.id}`);
 
-app.use("/",authRoutes);
+  socket.on('join-dashboard', (dashboardId) => {
+    socket.join(dashboardId);
+    console.log(`User joined dashboard: ${dashboardId}`);
+  });
 
-connectDB();
+  socket.on('chart-update', ({ dashboardId, chartId, newData }) => {
+    // Broadcast updated data to other users in the same room
+    socket.to(dashboardId).emit('receive-chart-update', { chartId, newData });
+  });
 
-app.listen(PORT, () => {
-  console.log(`🔧 Pulseboard backend running on http://localhost:${PORT}`);
+  socket.on('disconnect', () => {
+    console.log(`Socket disconnected: ${socket.id}`);
+  });
 });
+
+
+app.use("/", authRoutes);
+
+const startServer = async () => {
+  try {
+    await connectDB();
+
+    server.listen(PORT, () => {
+      console.log(`🔧 Pulseboard backend running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error("❌ Error connecting to DB:", error.message);
+  }
+};
+
+startServer();
