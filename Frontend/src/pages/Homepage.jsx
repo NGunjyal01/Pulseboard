@@ -35,7 +35,7 @@ const Homepage = () => {
             <ThemeToggle/>
         </div>
         {/* Hero Section */}
-        <section className="gradient-bg py-20 px-4">
+        <section className="bg-primary/10 dark:bg-background py-20 px-4">
           <div className="max-w-6xl mx-auto text-center">
             <div className="flex justify-center mb-8">
               <div className="w-20 h-20 bg-gradient-to-br from-primary/40 to-primary rounded-3xl flex items-center justify-center shadow-2xl">
@@ -43,7 +43,7 @@ const Homepage = () => {
               </div>
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary/10 to-primary bg-clip-text text-transparent">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary/40 to-primary bg-clip-text text-transparent">
               Pulseboard
             </h1>
             
@@ -60,7 +60,7 @@ const Homepage = () => {
                 </Link>
               </Button>
               
-              <Button asChild variant="outline" size="lg" className="border-primary text-lg px-8 py-4 h-auto border-2 hover:bg-primary/5">
+              <Button asChild variant="outline" size="lg" className="border-primary dark:text-primary-foreground text-lg px-8 py-4 h-auto border-2 hover:bg-primary/5">
                 <Link to="/login">
                   Sign In
                 </Link>
@@ -70,10 +70,10 @@ const Homepage = () => {
         </section>
 
         {/* Features Section */}
-        <section className=" py-20 px-4">
+        <section className="bg-secondary py-20 px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              <h2 className="text-3xl dark:text-primary-foreground md:text-4xl font-bold mb-4">
                 Built for Modern Teams
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -101,9 +101,9 @@ const Homepage = () => {
         
 
         {/* CTA Section */}
-        <section className="gradient-bg py-20 px-4">
+        <section className="bg-primary/10 dark:bg-background py-20 px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            <h2 className="dark:text-primary-foreground text-3xl md:text-4xl font-bold mb-6">
               Ready to Transform Your Data?
             </h2>
             <p className="text-xl text-muted-foreground mb-8">
