@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Routes } from 'react-router'
 import Homepage from './pages/Homepage'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
-import Dashboard from './pages/Dashboard'
+import Dashboards from './pages/Dashboards'
 import { Toaster } from 'sonner'
 
 // 🟢 Apply theme + mode before app renders
@@ -39,7 +39,7 @@ createRoot(document.getElementById('root')).render(
         <Route index element={<Homepage />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
-        <Route path='/dashboard' element={<Dashboard/>}/>
+        <Route path='/dashboards' element={<Dashboards/>}/>
       </Routes>
       <Toaster/>
     </BrowserRouter>

@@ -33,7 +33,7 @@ const ThemeToggle = () => {
         </Button>
 
         {/* Theme Palette Dropdown */}
-        <DropdownMenu>
+        {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button
                     variant="ghost"
@@ -53,7 +53,7 @@ const ThemeToggle = () => {
                     />
                 ))}
             </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
     </div>
     );
 };
