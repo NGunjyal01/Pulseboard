@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Layout from "@/components/Layout";
-import DashboardCard from "@/components/DashboardCard";
+import DashboardCard from "@/components/dashboard/DashboardCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LayoutGrid, List, Plus, Search } from "lucide-react";
