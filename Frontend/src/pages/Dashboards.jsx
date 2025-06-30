@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LayoutGrid, List, Plus, Search } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useNavigate } from "react-router";
 
 // Mock data
 const mockDashboards = [
@@ -150,6 +151,7 @@ const Dashboards = () => {
     const [filteredDashboards, setFilteredDashboards] = useState(mockDashboards);
     const [viewMode, setViewMode] = useState('grid');
     const isMobile = useIsMobile();
+    const navigate = useNavigate();
 
     const handleSearch = (query) => {
     setSearchQuery(query);
@@ -177,13 +179,12 @@ const Dashboards = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
             <div>
-            <h1 className="text-3xl font-bold tracking-tight">Dashboards</h1>
-            <p className="text-muted-foreground mt-2">
+            <h1 className="text-2xl lg:text-3xl font-bold tracking-tight">Dashboards</h1>
+            <p className="text-sm lg:text-base text-muted-foreground mt-2">
                 Manage and view your data dashboards
             </p>
             </div>
-            {filteredDashboards.length !== 0 && <div className="flex items-center gap-2">
-                {!isMobile && <>
+            {filteredDashboards.length !== 0 && !isMobile && <div className="flex items-center gap-2">
                 <Button
                     variant={viewMode === "grid" ? "default" : "ghost"}
                     size="icon"
@@ -200,8 +201,7 @@ const Dashboards = () => {
                 >
                     <List className="w-4 h-4" />
                 </Button>
-                </>}
-                <Button className="gap-2 cursor-pointer">
+                <Button className="gap-2 cursor-pointer" onClick={()=> navigate('/createDashboard')}>
                     <Plus className="w-4 h-4" />
                     Create Dashboard
                 </Button>
@@ -209,15 +209,21 @@ const Dashboards = () => {
         </div>
 
         {/* Search Input */}
-        {isMobile && <div className="flex items-center gap-4">
-            <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-                placeholder="Search dashboards..."
-                value={searchQuery}
-                onChange={(e) => handleSearch(e.target.value)}
-                className="pl-10 bg-muted/50 border border-border focus:bg-background transition"
-            />
+        {isMobile && <div className="flex flex-col gap-6">
+            <div className="">
+                <Button className="gap-2 cursor-pointer" onClick={()=> navigate('/createDashboard')}>
+                    <Plus className="w-4 h-4" />
+                    Create Dashboard
+                </Button>
+            </div>
+            <div className="relative flex-1 xmax-w-md">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <Input
+                    placeholder="Search dashboards..."
+                    value={searchQuery}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    className="pl-10 bg-muted/50 border border-border focus:bg-background transition"
+                />
             </div>
         </div>}
 

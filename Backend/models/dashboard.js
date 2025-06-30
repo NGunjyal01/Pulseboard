@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const dashboardSchema = new mongoose.Schema({
   title: String,
+  description: String,
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   collaborators: [
     {
