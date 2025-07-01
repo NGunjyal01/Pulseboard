@@ -17,26 +17,37 @@ import {
   Settings,
   LogOut,
   BarChart3,
-  ChevronsUpDown,
+  User,
+  Users
 } from "lucide-react";
 
 import { Link } from "react-router";
 
 const menuItems = [
     {
-    title: "Dashboards",
-    url: "/dashboards",
-    icon: LayoutDashboard,
+        title: "Dashboards",
+        url: "/dashboards",
+        icon: LayoutDashboard,
     },
     {
-    title: "Create Dashboard",
-    url: "/create",
-    icon: Plus,
+        title: "Create Dashboard",
+        url: "/create",
+        icon: Plus,
     },
     {
-    title: "Settings",
-    url: "/settings",
-    icon: Settings,
+        title: 'Friends',
+        url: '/friends',
+        icon: User
+    },
+    {
+        title: 'Teams',
+        url: '/teams',
+        icon: Users  
+    },
+    {
+        title: "Settings",
+        url: "/settings",
+        icon: Settings,
     },
 ];
 

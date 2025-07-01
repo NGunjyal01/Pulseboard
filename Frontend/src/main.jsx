@@ -8,6 +8,8 @@ import Signup from './pages/Signup'
 import Dashboards from './pages/Dashboards'
 import { Toaster } from 'sonner'
 import CreateDashboard from './pages/CreateDashboard'
+import Friends from './pages/Friends'
+import Teams from './pages/Teams'
 
 // 🟢 Apply theme + mode before app renders
 const themeData = localStorage.getItem('pulseboard-theme');
@@ -42,6 +44,8 @@ createRoot(document.getElementById('root')).render(
         <Route path='/signup' element={<Signup />} />
         <Route path='/dashboards' element={<Dashboards/>}/>
         <Route path='/createDashboard' element={<CreateDashboard/>}/>
+        <Route path='/friends' element={<Friends/>}/>
+        <Route path='/teams' element={<Teams/>}/>
       </Routes>
       <Toaster/>
     </BrowserRouter>
