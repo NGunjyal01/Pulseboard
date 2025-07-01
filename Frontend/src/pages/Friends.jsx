@@ -103,7 +103,7 @@ const Friends = () => {
     <div className="min-h-screen bg-background">
       <header className="border-b">
         <div className="flex h-16 items-center px-6">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/dashboards")}>
+          <Button size="sm" className={'absolute cursor-pointer lg:py-5'} onClick={() => navigate("/dashboards")}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Dashboards
           </Button>
@@ -112,7 +112,7 @@ const Friends = () => {
           </div>
           <Dialog open={isAddFriendDialogOpen} onOpenChange={setIsAddFriendDialogOpen}>
             <DialogTrigger asChild>
-              <Button>
+              <Button className={'absolute cursor-pointer right-[2%]'}>
                 <UserPlus className="h-4 w-4 mr-2" />
                 Add Friend
               </Button>

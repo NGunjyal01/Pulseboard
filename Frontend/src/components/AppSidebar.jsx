@@ -31,7 +31,7 @@ const menuItems = [
     },
     {
         title: "Create Dashboard",
-        url: "/create",
+        url: "/createDashboard",
         icon: Plus,
     },
     {
