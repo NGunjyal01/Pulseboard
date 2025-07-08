@@ -43,16 +43,16 @@ const CollaboratorItem = ({ collaborator, onRoleChange, onRemove }) => {
           value={collaborator.role}
           onValueChange={role => onRoleChange(collaborator.id, role)}
         >
-          <SelectTrigger className="w-24">
+          <SelectTrigger className="w-24 cursor-pointer" >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="viewer">Viewer</SelectItem>
-            <SelectItem value="editor">Editor</SelectItem>
-            <SelectItem value="admin">Admin</SelectItem>
+            <SelectItem value="viewer" className={"cursor-pointer"}>Viewer</SelectItem>
+            <SelectItem value="editor" className={"cursor-pointer"}>Editor</SelectItem>
+            <SelectItem value="admin" className={"cursor-pointer"}>Admin</SelectItem>
           </SelectContent>
         </Select>
-        <Button variant="ghost" size="sm" onClick={() => onRemove(collaborator.id)}>
+        <Button variant="ghost" size="sm" onClick={() => onRemove(collaborator.id)} className={"cursor-pointer"}>
           <X className="h-4 w-4" />
         </Button>
       </div>

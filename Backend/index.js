@@ -12,6 +12,7 @@ const connectDB = require("./utils/db");
 
 //routes
 const authRoutes = require("./routes/auth");
+const dashboardRoutes = require("./routes/dashboard");
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -47,6 +48,7 @@ io.on('connection', (socket) => {
 
 
 app.use("/", authRoutes);
+app.use("/dashboard",userAuth,dashboardRoutes);
 
 const startServer = async () => {
   try {

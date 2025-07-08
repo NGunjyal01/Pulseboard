@@ -12,6 +12,8 @@ import Friends from './pages/Friends'
 import Teams from './pages/Teams'
 import CreateTeam from './pages/CreateTeam'
 import TeamDetails from './pages/TeamDetails'
+import PrivateRoute from './components/PrivateRoute'
+import OpenRoute from './components/OpenRoute'
 
 // 🟢 Apply theme + mode before app renders
 const themeData = localStorage.getItem('pulseboard-theme');
@@ -41,15 +43,15 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route index element={<Homepage />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/signup' element={<Signup />} />
-        <Route path='/dashboards' element={<Dashboards/>}/>
-        <Route path='/createDashboard' element={<CreateDashboard/>}/>
-        <Route path='/friends' element={<Friends/>}/>
-        <Route path='/teams' element={<Teams/>}/>
-        <Route path='/createTeam' element={<CreateTeam/>}/>
-        <Route path='/team/:teamId' element={<TeamDetails/>}/>
+        <Route index element={<Homepage/>} />
+        <Route path='/login' element={<OpenRoute><Login/></OpenRoute>} />
+        <Route path='/signup' element={<OpenRoute><Signup/></OpenRoute>} />
+        <Route path='/dashboards' element={<PrivateRoute><Dashboards/></PrivateRoute>}/>
+        <Route path='/createDashboard' element={<PrivateRoute><CreateDashboard/></PrivateRoute>}/>
+        <Route path='/friends' element={<PrivateRoute><Friends/></PrivateRoute>}/>
+        <Route path='/teams' element={<PrivateRoute><Teams/></PrivateRoute>}/>
+        <Route path='/createTeam' element={<PrivateRoute><CreateTeam/></PrivateRoute>}/>
+        <Route path='/team/:teamId' element={<PrivateRoute><TeamDetails/></PrivateRoute>}/>
       </Routes>
       <Toaster/>
     </BrowserRouter>

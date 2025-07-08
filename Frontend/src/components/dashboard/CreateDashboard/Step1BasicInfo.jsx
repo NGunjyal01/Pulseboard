@@ -85,11 +85,11 @@ const Step1BasicInfo = ({ dashboardData, setDashboardData, onNext, onCancel }) =
           <div className="border rounded-lg p-4">
             <Tabs defaultValue="friends" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="friends">
+                <TabsTrigger value="friends" className={"cursor-pointer"}>
                   <User className="h-4 w-4 mr-2" />
                   Friends
                 </TabsTrigger>
-                <TabsTrigger value="teams">
+                <TabsTrigger value="teams" className={"cursor-pointer"}>
                   <Building className="h-4 w-4 mr-2" />
                   Teams
                 </TabsTrigger>
@@ -115,7 +115,7 @@ const Step1BasicInfo = ({ dashboardData, setDashboardData, onNext, onCancel }) =
                           <p className="text-xs text-muted-foreground">{friend.email}</p>
                         </div>
                       </div>
-                      <Button size="sm" variant="outline" onClick={() => addCollaborator(friend)}>
+                      <Button size="sm" variant="outline" onClick={() => addCollaborator(friend)} className={"cursor-pointer"}>
                         <Plus className="h-3 w-3 mr-1" />
                         Add
                       </Button>
@@ -140,7 +140,7 @@ const Step1BasicInfo = ({ dashboardData, setDashboardData, onNext, onCancel }) =
                           <p className="text-xs text-muted-foreground">{team.members} members</p>
                         </div>
                       </div>
-                      <Button size="sm" variant="outline" onClick={() => addCollaborator(team)}>
+                      <Button size="sm" variant="outline" onClick={() => addCollaborator(team)} className={"cursor-pointer"}>
                         <Plus className="h-3 w-3 mr-1" />
                         Add Team
                       </Button>
@@ -152,10 +152,10 @@ const Step1BasicInfo = ({ dashboardData, setDashboardData, onNext, onCancel }) =
         </div>
 
         <div className="flex justify-between">
-          <Button variant="outline" onClick={onCancel}>
+          <Button variant="outline" onClick={onCancel} className={"cursor-pointer"}>
             Cancel
           </Button>
-          <Button onClick={onNext} disabled={!dashboardData.title.trim()}>
+          <Button onClick={onNext} disabled={!dashboardData.title.trim()} className={"cursor-pointer"}>
             Next
           </Button>
         </div>

@@ -26,15 +26,15 @@ const CreateDashboardPage = () => {
   const handleBack = () => step > 1 && setStep(step - 1);
   const handleCancel = () => (window.location.href = "/dashboards");
   const handleCreate = () => {
-    console.log("Creating dashboard:", dashboardData);
-    window.location.href = "/dashboards";
+    // console.log("Creating dashboard:", dashboardData);
+    // window.location.href = "/dashboards";
   };
 
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b">
         <div className="flex h-16 items-center px-6">
-          <Button variant="ghost" size="sm" onClick={handleCancel}>
+          <Button size="sm" onClick={handleCancel} className={"absolute lg:py-5"}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Dashboards
           </Button>

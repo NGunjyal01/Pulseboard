@@ -10,6 +10,7 @@ import {
   SidebarHeader,
   SidebarFooter,
 } from "@/components/ui/sidebar";
+import { createDashboard } from "@/services/dashboardAPI";
 
 import {
   LayoutDashboard,
@@ -51,6 +52,10 @@ const menuItems = [
     },
 ];
 
+const handleCreateDashboardClick = () => {
+    createDashboard();
+}
+
 const AppSidebar = () => {
     return (
     <Sidebar collapsible="icon" className="border-r border-border bg-background text-foreground min-w-[64px] sticky top-0 z-20">
@@ -79,6 +84,7 @@ const AppSidebar = () => {
                         <Link
                             to={url}
                             className="flex items-center gap-4 px-3 py-6 rounded-md "
+                            onClick={title === "Create Dashboard" ? handleCreateDashboardClick : undefined}
                         >
                             <Icon className="!size-5"/>
                             <span>{title}</span>

@@ -17,7 +17,7 @@ const ProgressIndicator = ({ step }) => {
                 <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                     step >= stepNumber
-                    ? "bg-blue-600 text-white"
+                    ? "bg-primary text-white"
                     : "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400"
                 }`}
                 >
@@ -27,7 +27,7 @@ const ProgressIndicator = ({ step }) => {
             </div>
             {stepNumber < 3 && (
                 <div
-                className={`w-16 h-1 mx-2 ${step > stepNumber ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-700"}`}
+                className={`w-16 h-1 mx-2 ${step > stepNumber ? "bg-primary" : "bg-gray-200 dark:bg-gray-700"}`}
                 />
             )}
             </div>

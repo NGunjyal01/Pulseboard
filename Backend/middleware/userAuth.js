@@ -11,6 +11,7 @@ const userAuth = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
         req.user = decoded;
+        console.log("This is middlware......................",req.user)
         next();
     } catch {
         return res.status(403).json({ 

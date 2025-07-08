@@ -1,6 +1,7 @@
 import axios from "axios";
 import { toast } from "sonner";
 import { authEndpoints } from "./apis";
+import useAuthStore from "@/store/useAuthStore";
 
 const {SIGNUP_API, LOGIN_API} = authEndpoints;
 
@@ -42,6 +43,9 @@ export const login = async(formData,navigate)=>{
         }
         else{
             toast.success("Login Successful");
+            const { user } = response.data;
+            // useAuthStore.getState().setToken(token);
+            useAuthStore.getState().setUser(user);s
             navigate('/dashboard');
         }
     }

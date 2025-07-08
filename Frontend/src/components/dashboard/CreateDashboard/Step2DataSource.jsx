@@ -89,7 +89,7 @@ const Step2DataSource = ({ dashboardData, setDashboardData, onBack, onNext, onCa
           <div
             className={`p-4 border rounded-lg cursor-pointer transition-colors ${
               dashboardData.dataSource === "csv"
-                ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                ? "border-primary bg-primary/10 dark:bg-blue-900/20"
                 : "border-gray-200 hover:border-gray-300 dark:border-gray-700"
             }`}
             onClick={() => handleDataSourceChange("csv")}
@@ -103,7 +103,7 @@ const Step2DataSource = ({ dashboardData, setDashboardData, onBack, onNext, onCa
           <div
             className={`p-4 border rounded-lg cursor-pointer transition-colors ${
               dashboardData.dataSource === "api"
-                ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                ? "border-primary bg-primary/10 dark:bg-blue-900/20"
                 : "border-gray-200 hover:border-gray-300 dark:border-gray-700"
             }`}
             onClick={() => handleDataSourceChange("api")}
@@ -117,7 +117,7 @@ const Step2DataSource = ({ dashboardData, setDashboardData, onBack, onNext, onCa
           <div
             className={`p-4 border rounded-lg cursor-pointer transition-colors ${
               dashboardData.dataSource === "simulated"
-                ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                ? "border-primary bg-primary/10 dark:bg-blue-900/20"
                 : "border-gray-200 hover:border-gray-300 dark:border-gray-700"
             }`}
             onClick={() => handleDataSourceChange("simulated")}
@@ -133,11 +133,11 @@ const Step2DataSource = ({ dashboardData, setDashboardData, onBack, onNext, onCa
           <div className="space-y-4">
             <div>
               <Label htmlFor="csv-file">Upload CSV File</Label>
-              <Input id="csv-file" type="file" accept=".csv" onChange={handleFileUpload} className="mt-2" />
+              <Input id="csv-file" type="file" accept=".csv" onChange={handleFileUpload} className="mt-2 cursor-pointer" />
             </div>
             {dashboardData.csvFile && (
-              <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                <p className="text-sm font-medium text-green-800 dark:text-green-200">
+              <div className="p-3 bg-primary/10 rounded-lg">
+                <p className="text-sm font-medium dark:text-green-200">
                   ✅ File uploaded: {dashboardData.csvFile.name}
                 </p>
               </div>
@@ -156,7 +156,7 @@ const Step2DataSource = ({ dashboardData, setDashboardData, onBack, onNext, onCa
                 onChange={e => setDashboardData(prev => ({ ...prev, apiUrl: e.target.value }))}
               />
             </div>
-            <Button onClick={handleApiPreview} disabled={!dashboardData.apiUrl}>
+            <Button onClick={handleApiPreview} disabled={!dashboardData.apiUrl} className={"cursor-pointer"}>
               <Eye className="h-4 w-4 mr-2" />
               Fetch Preview
             </Button>
@@ -225,14 +225,14 @@ const Step2DataSource = ({ dashboardData, setDashboardData, onBack, onNext, onCa
         )}
 
         <div className="flex justify-between">
-          <Button variant="outline" onClick={onCancel}>
+          <Button variant="outline" onClick={onCancel} className={"cursor-pointer"}>
             Cancel
           </Button>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={onBack}>
+            <Button variant="outline" onClick={onBack} className={"cursor-pointer"}>
               Back
             </Button>
-            <Button onClick={onNext} disabled={!dashboardData.parsedData}>
+            <Button onClick={onNext} disabled={!dashboardData.parsedData} className={"cursor-pointer"}>
               Next
             </Button>
           </div>
