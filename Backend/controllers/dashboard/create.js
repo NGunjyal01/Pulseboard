@@ -2,10 +2,10 @@ const Dashboard = require("../../models/dashboard")
 
 const create = async (req, res) => {
   try {
-    console.log(req)
+    console.log(req.user)
     const dashboard = new Dashboard({
       title: 'Untitled Dashboard',
-      createdBy: req.user._id,
+      createdBy: req.user.id,
       status: 'draft',
     });
     
@@ -17,10 +17,13 @@ const create = async (req, res) => {
         status: 'draft',
     });
   } catch (error) {
-    return res.status(500).json({ 
-        success:false,
-        error: 'Failed to create dashboard' });
-  }
+  console.error("Dashboard create error:", error);
+  return res.status(500).json({ 
+    success: false,
+    error: 'Failed to create dashboard',
+    message: error.message
+  });
+}
 };
 
 module.exports = create;

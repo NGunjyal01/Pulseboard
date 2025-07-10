@@ -6,25 +6,18 @@ import ProgressIndicator from '@/components/dashboard/CreateDashboard/ProgessInd
 import Step1BasicInfo from '@/components/dashboard/CreateDashboard/Step1BasicInfo';
 import Step2DataSource from '@/components/dashboard/CreateDashboard/Step2DataSource';
 import Step3ConfigureCharts from '@/components/dashboard/CreateDashboard/Step3ConfigureCharts';
+import { useNavigate } from 'react-router';
+import useDashboardStore from '@/store/useDashboardStore';
 
 const CreateDashboardPage = () => {
-  const [step, setStep] = useState(1);
-  const [dashboardData, setDashboardData] = useState({
-    title: "",
-    description: "",
-    collaborators: [],
-    dataSource: "",
-    csvFile: null,
-    apiUrl: "",
-    selectedDataset: "",
-    parsedData: null,
-    dataFields: [],
-    charts: [],
-  });
+  const navigate = useNavigate();
+  const {resetDashboardData,step,setStep} = useDashboardStore();
 
-  const handleNext = () => step < 3 && setStep(step + 1);
   const handleBack = () => step > 1 && setStep(step - 1);
-  const handleCancel = () => (window.location.href = "/dashboards");
+  const handleCancel = () => {
+    resetDashboardData();
+    navigate('/dashboards');
+  }
   const handleCreate = () => {
     // console.log("Creating dashboard:", dashboardData);
     // window.location.href = "/dashboards";
@@ -49,29 +42,20 @@ const CreateDashboardPage = () => {
         
         {step === 1 && (
           <Step1BasicInfo
-            dashboardData={dashboardData}
-            setDashboardData={setDashboardData}
-            onNext={handleNext}
             onCancel={handleCancel}
           />
         )}
         
         {step === 2 && (
           <Step2DataSource
-            dashboardData={dashboardData}
-            setDashboardData={setDashboardData}
             onBack={handleBack}
-            onNext={handleNext}
             onCancel={handleCancel}
           />
         )}
         
         {step === 3 && (
           <Step3ConfigureCharts
-            dashboardData={dashboardData}
-            setDashboardData={setDashboardData}
             onBack={handleBack}
-            onCreate={handleCreate}
             onCancel={handleCancel}
           />
         )}

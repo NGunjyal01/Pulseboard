@@ -1,41 +1,61 @@
-// src/components/dashboard/CreateDashboard/Step1BasicInfo.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Plus, User, Building } from 'lucide-react';
+import { Plus, User, Building, Loader2 } from 'lucide-react';
 import CollaboratorItem from './CollaboratorItem';
 import { mockFriends, mockTeams } from './constants';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import useDashboardStore from '@/store/useDashboardStore';
+import { updateStep1BasicInfo } from '@/services/dashboardAPI';
+import { toast } from 'sonner';
 
-const Step1BasicInfo = ({ dashboardData, setDashboardData, onNext, onCancel }) => {
+const Step1BasicInfo = ({ onCancel }) => {
+  const {dashboardData,dashboardId,setDashboardData,step,setStep} = useDashboardStore();
+  const [isLoading,setIsLoading] = useState(false);
   const addCollaborator = (item) => {
     if (!dashboardData.collaborators.find(c => c.id === item.id)) {
-      setDashboardData(prev => ({
-        ...prev,
-        collaborators: [...prev.collaborators, { ...item, role: "viewer" }],
-      }));
+      setDashboardData({
+        collaborators: [...dashboardData.collaborators, { ...item, role: "viewer" }],
+      });
     }
   };
 
   const removeCollaborator = (id) => {
-    setDashboardData(prev => ({
-      ...prev,
-      collaborators: prev.collaborators.filter(c => c.id !== id),
-    }));
+    setDashboardData({
+      collaborators: dashboardData.collaborators.filter(c => c.id !== id),
+    });
   };
 
   const updateCollaboratorRole = (id, role) => {
-    setDashboardData(prev => ({
-      ...prev,
-      collaborators: prev.collaborators.map(c => 
+    setDashboardData({
+      collaborators: dashboardData.collaborators.map(c =>
         c.id === id ? { ...c, role } : c
       ),
-    }));
+    });
   };
+
+  const handleNext = async() => {
+    setIsLoading(true);
+    try{
+      const updatedFields = {};
+      const {title,description,collaborators} = dashboardData;
+      if (title) updatedFields.title = title;
+      if (description) updatedFields.description = description;
+      if (collaborators) updatedFields.collaborators = collaborators;
+      console.log(dashboardId,updatedFields)
+      const result = await updateStep1BasicInfo(dashboardId,updatedFields);
+      console.log(result);
+      step < 3 && setStep(step + 1);
+    }catch(error){
+      // toast.error("Error while step1");
+    }finally{
+      setIsLoading(false);
+    }
+  }
 
   return (
     <Card>
@@ -50,7 +70,7 @@ const Step1BasicInfo = ({ dashboardData, setDashboardData, onNext, onCancel }) =
             id="title"
             placeholder="e.g., Sales Performance Q4"
             value={dashboardData.title}
-            onChange={e => setDashboardData(prev => ({ ...prev, title: e.target.value }))}
+            onChange={e => setDashboardData({ title: e.target.value })}
           />
         </div>
 
@@ -60,7 +80,7 @@ const Step1BasicInfo = ({ dashboardData, setDashboardData, onNext, onCancel }) =
             id="description"
             placeholder="Brief description of what this dashboard will show..."
             value={dashboardData.description}
-            onChange={e => setDashboardData(prev => ({ ...prev, description: e.target.value }))}
+            onChange={e => setDashboardData({ description: e.target.value })}
           />
         </div>
 
@@ -155,8 +175,9 @@ const Step1BasicInfo = ({ dashboardData, setDashboardData, onNext, onCancel }) =
           <Button variant="outline" onClick={onCancel} className={"cursor-pointer"}>
             Cancel
           </Button>
-          <Button onClick={onNext} disabled={!dashboardData.title.trim()} className={"cursor-pointer"}>
-            Next
+          <Button onClick={handleNext} disabled={!dashboardData.title.trim() || isLoading}>
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isLoading ? "Processing..." : "Next"}
           </Button>
         </div>
       </CardContent>

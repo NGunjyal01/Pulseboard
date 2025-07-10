@@ -34,7 +34,7 @@ export const signup = async(formData,navigate)=>{
 
 export const login = async(formData,navigate)=>{
     try{
-        const response = await axios.post(LOGIN_API,formData);
+        const response = await axios.post(LOGIN_API,formData,{withCredentials:true});
         console.log("LOGIN API RESPONSE..............",response);
         if(!response.data.success){
             const error = new Error(response.data.message);
@@ -45,8 +45,8 @@ export const login = async(formData,navigate)=>{
             toast.success("Login Successful");
             const { user } = response.data;
             // useAuthStore.getState().setToken(token);
-            useAuthStore.getState().setUser(user);s
-            navigate('/dashboard');
+            useAuthStore.getState().setUser(user);
+            navigate('/dashboards');
         }
     }
     catch(error){

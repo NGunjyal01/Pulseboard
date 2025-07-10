@@ -19,7 +19,12 @@ const login = async (req, res) => {
                 error: 'Invalid credentials' });
 
         const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
-        return res.cookie("token",token,{maxAge: 7*24*60*60*1000}).json({ 
+        return res.cookie("token", token, {
+            httpOnly: true,
+            secure: false,         // false for localhost
+            sameSite: "lax",       // lax works fine for localhost
+            maxAge: 604800000,     // 7 days
+            }).json({ 
             success:true,
             message: "Login Successful",
             user });

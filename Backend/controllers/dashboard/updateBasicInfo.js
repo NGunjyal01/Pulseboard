@@ -3,8 +3,12 @@ const Dashboard = require("../../models/dashboard")
 const updateBasicInfo = async (req, res) => {
     try {
         const { title, description, collaborators } = req.body;
+        const updateFields = {};
+        if (title) updateFields.title = title;
+        if (description) updateFields.description = description;
+        if (collaborators) updateFields.collaborators = collaborators;
 
-        const dashboard = await Dashboard.findByIdAndUpdate(req.params.id,{title,description,collaborators,},{ new: true });
+        const dashboard = await Dashboard.findByIdAndUpdate(req.params.id,updateFields,{ new: true });
         if (!dashboard) {
             return res.status(404).json({
                 success: false,

@@ -1,5 +1,4 @@
-// models/Dashboard.js
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const dashboardSchema = new mongoose.Schema({
   title: { type: String, 
@@ -14,20 +13,42 @@ const dashboardSchema = new mongoose.Schema({
     role: { type: String, enum: ['editor', 'viewer'], default: 'viewer' }
   }],
   dataSource: {
-    type: { type: String, enum: ['csv', 'api', 'simulated'], required: true },
+    type: { type: String, enum: ['csv', 'api', 'simulated'], required: true,default:'csv' },
     csvConfig: {
       fileName: String,
       parsedData: [mongoose.Schema.Types.Mixed]
     },
     apiConfig: {
-      endpoint: String,
-      method: { type: String, 
-        default: 'GET' },
-      responseSnapshot: mongoose.Schema.Types.Mixed
+      endpoint: {
+        type: String,
+        required: true,
+        default:'sampleAPI'
+      },
+      method: {
+        type: String,
+        enum: ['GET', 'POST'],
+        default: 'GET'
+      },
+      params: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {}
+      },
+      body: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {}
+      },
+      dataPath: {
+        type: String,
+        default: '' // optional, can be empty if root array
+      },
+      responseSnapshot: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {}
+      }
     },
     simulatedConfig: {
       type: { type: String, 
-        enum: ['timeseries', 'categorical', 'numerical'] },
+        enum: ['Sales Performance', 'Marketing Analytics', 'User Engagement', 'Financial Metrics', 'Inventory Status', 'Support Tickets', 'A/B Testing', 'Shipping Performance', 'SaaS Metrics', 'Social Media Analytics'] },
       sampleData: [mongoose.Schema.Types.Mixed]
     }
   },
@@ -35,14 +56,16 @@ const dashboardSchema = new mongoose.Schema({
     type: {
       type: String,
       enum: ['line', 'bar', 'area', 'pie', 'radar', 'composed'],
-      required: true
+      required: true,
+      default: 'line'
     },
     title: {
       type: String,
-      required: true
+      required: true,
+      default: 'unamed'
     },
     dataMapping: {
-      xAxis: { type: String, required: true }
+      xAxis: { type: String, required: true , default: 'none'}
     },
     // ✅ For all normal charts: just list values to plot
     values: [String],
@@ -53,7 +76,8 @@ const dashboardSchema = new mongoose.Schema({
       viewType: {
         type: String,
         enum: ['line', 'bar', 'area'], // only valid for composed
-        required: true
+        required: true,
+        default: 'line'
       }
     }]
   }],
@@ -70,4 +94,4 @@ dashboardSchema.pre('save', function(next) {
   next();
 });
 
-export default mongoose.model('Dashboard', dashboardSchema);
+module.exports =  mongoose.model('Dashboard', dashboardSchema);

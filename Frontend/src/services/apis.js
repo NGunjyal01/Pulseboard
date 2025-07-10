@@ -12,4 +12,5 @@ export const dashboardEndpoints = {
     STEP1_API: BASE_URL + '/dashboard/step1',
     UPLOAD_CSV_API: BASE_URL + '/dashboard/step2/upload-csv',
     CONNECTAPI_API: BASE_URL + '/dashboard/step2/connectAPI',
+    SIMULATE_DATA_API: BASE_URL + '/dashboard/step2/simulate-data',
 }

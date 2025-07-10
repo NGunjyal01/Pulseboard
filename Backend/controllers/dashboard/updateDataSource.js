@@ -1,4 +1,6 @@
+const axios = require('axios');
 const parseCSV = require('../../utils/parseCSV');
+const Dashboard = require("../../models/dashboard")
 
 const uploadCSV =async (req, res) => {
   try {
@@ -10,26 +12,34 @@ const uploadCSV =async (req, res) => {
     }
     
     // Parse CSV
-    const { data, headers } = await parseCSV(req.file.buffer);
-    
-    // Save file info (in production, save to S3 or filesystem)
-    const filePath = `/uploads/${req.file.originalname}`;
-    
-    await Dashboard.findByIdAndUpdate(req.params.id,
-      {
+    let data, headers;
+    try {
+      ({ data, headers } = await parseCSV(req.file.buffer));
+      // console.log("✅ Parsed CSV:", data.length, "rows");
+    } catch (csvError) {
+      // console.error("❌ Error parsing CSV:", csvError);
+      return res.status(400).json({ success: false, error: "CSV parsing failed" });
+    }
+
+    const fileName = req.file.originalname;
+    await Dashboard.findByIdAndUpdate(req.params.id,{
+      $set:{ 
         'dataSource.type': 'csv',
-        'dataSource.csvConfig': {
-          filePath,
-          headers
-        },
+        'dataSource.csvConfig': {fileName:req.file.originalname,parsedData:data},
+      },
+      $unset:{
+        'dataSource.apiConfig': '',
+        'dataSource.simulatedConfig': ''
       }
-    );
+    });
     
     return res.status(200).json({
       success: true,
+      fileName,
       headers,
       sampleData: data
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -40,90 +50,98 @@ const uploadCSV =async (req, res) => {
 
 const connectAPI = async (req, res) => {
   try {
-    const { endpoint, method, params, body, dataPath } = req.body;
-    
-    // Test API connection
-    const response = await axios({
-      method: method || 'GET',
+    const { endpoint, method = 'GET', params = {}, body = {}, dataPath = '' } = req.body;
+
+    // Make the API call
+    const apiResponse = await axios({
+      method,
       url: endpoint,
-      headers,
       params,
-      data: body
+      data: body,
     });
-    
-    // Extract data using dataPath if provided
-    const data = dataPath 
-      ? dataPath.split('.').reduce((obj, key) => obj[key], response.data)
-      : response.data;
-      
-    if (!Array.isArray(data)) {
-      throw new Error('API response must be an array or contain an array at the specified dataPath');
+
+    // Extract nested data if dataPath is provided
+    let data = apiResponse.data;
+    if (dataPath) {
+      try {
+        data = dataPath.split('.').reduce((obj, key) => obj[key], apiResponse.data);
+      } catch (err) {
+        return res.status(400).json({
+          success: false,
+          error: `Invalid dataPath: '${dataPath}'`,
+        });
+      }
     }
-    
-    // Get headers from first item
+
+    // Ensure the data is an array
+    if (!Array.isArray(data)) {
+      return res.status(400).json({
+        success: false,
+        error: 'API response must be an array or contain an array at the specified dataPath',
+      });
+    }
+
+    // Extract field names
     const headers = data.length > 0 ? Object.keys(data[0]) : [];
-    
-    // Save API config
-    await Dashboard.findByIdAndUpdate(
-      req.params.id,
-      {
+
+    // Save API config in MongoDB
+    await Dashboard.findByIdAndUpdate(req.params.id, {
+      $set:{
         'dataSource.type': 'api',
         'dataSource.apiConfig': {
           endpoint,
           method,
-          headers,
           params,
           body,
-          dataPath
-        }
+          dataPath,
+          responseSnapshot:data,
+        },},
+      $unset:{
+        'dataSource.csvConfig':'',
+        'dataSource.simulatedConfig':'',
       }
-    );
-    
-    res.json({
+    });
+
+    // Send response
+    return res.status(200).json({
       success: true,
       headers,
-      sampleData: data.slice(0, 10)
+      sampleData: data,
     });
+
   } catch (error) {
-    res.status(500).json({
+    console.error("❌ connectAPI error:", error.message);
+    return res.status(500).json({
       success: false,
-      error: `API connection failed: ${error.message}`
+      error: `API connection failed: ${error.message}`,
     });
   }
 };
 
-module.exports = {uploadCSV,connectAPI}
+const simulateData = async (req, res) => {
+  try {
+    const {type,sampleData} = req.body;
+    await Dashboard.findByIdAndUpdate(req.params.id,{
+      $set:{
+        'dataSource.type': 'simulated',
+        'dataSource.simulatedConfig': { type, sampleData},
+      },
+      $unset:{
+        'dataSource.csvConfig':'',
+        'dataSource.apiConfig': '',
+      }
+    });
+    
+    return res.status(200).json({
+      success: true,
+      sampleData: data
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to generate simulated data'
+    });
+  }
+};
 
-// import { generateSimulatedData } from '../utils/dataGenerators';
-
-// export const simulateData = async (req, res) => {
-//   try {
-//     const { type, rows } = req.body;
-    
-//     // Generate sample data
-//     const { data, headers } = generateSimulatedData(type, rows);
-    
-//     await Dashboard.findByIdAndUpdate(
-//       req.params.id,
-//       {
-//         'dataSource.type': 'simulated',
-//         'dataSource.simulatedConfig': {
-//           type,
-//           rows
-//         },
-//         updatedAt: Date.now()
-//       }
-//     );
-    
-//     res.json({
-//       success: true,
-//       headers,
-//       sampleData: data.slice(0, 10)
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       error: 'Failed to generate simulated data'
-//     });
-//   }
-// };
+module.exports = {uploadCSV,connectAPI,simulateData}

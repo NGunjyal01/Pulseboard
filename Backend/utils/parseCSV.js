@@ -1,35 +1,19 @@
-// utils/parseCSV.js
-const { Readable } = require('stream');
-const csv = require('csv-parser');
+const csv = require("csv-parser");
+const { Readable } = require("stream");
 
-function parseCSV(buffer) {
+const parseCSV = async (buffer) => {
   return new Promise((resolve, reject) => {
-    const data = [];
-    let headers = [];
+    const results = [];
+    const headers = [];
 
-    Readable.from(buffer)
+    const stream = Readable.from(buffer)
       .pipe(csv())
-      .on('headers', (h) => {
-        headers = h;
-      })
-      .on('data', (row) => {
-        const formattedRow = {};
-
-        // Try to cast numeric fields (Recharts loves numbers)
-        for (const key in row) {
-          const value = row[key].trim();
-          formattedRow[key] = isNaN(value) || value === '' ? value : Number(value);
-        }
-
-        data.push(formattedRow);
-      })
-      .on('end', () => {
-        resolve({ data, headers });
-      })
-      .on('error', (err) => {
-        reject(err);
-      });
+      .on("headers", (hdrs) => headers.push(...hdrs))
+      .on("data", (data) => results.push(data))
+      .on("end", () => resolve({ data: results, headers }))
+      .on("error", (err) => reject(err));
   });
-}
+};
+
 
 module.exports = parseCSV;

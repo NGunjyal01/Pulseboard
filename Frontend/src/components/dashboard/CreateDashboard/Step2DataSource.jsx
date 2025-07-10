@@ -2,78 +2,95 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Upload, Link, Database, Eye } from 'lucide-react';
+import { Upload, Link, Database, Eye, Loader2 } from 'lucide-react';
 import { sampleDatasets } from './constants';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import useDashboardStore from "@/store/useDashboardStore";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { updateStep2DataSource } from "@/services/dashboardAPI";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const Step2DataSource = ({ dashboardData, setDashboardData, onBack, onNext, onCancel }) => {
+const Step2DataSource = ({ onBack, onCancel }) => {
+  const {dashboardData,setDashboardData,dashboardId,step,setStep} = useDashboardStore();
+  const [isLoading,setIsLoading] = useState(false);
+
   const handleDataSourceChange = (source) => {
-    setDashboardData(prev => ({
-      ...prev,
-      dataSource: source,
-      parsedData: null,
-      dataFields: [],
-      csvFile: null,
-      apiUrl: "",
-      selectedDataset: "",
-    }));
+    if(dashboardData.dataSource!==source){
+      setDashboardData({
+        dataSource: source,
+        parsedData: null,
+        dataFields: [],
+        csvFileName: "",
+        apiUrl: "",
+        selectedDataset: "",
+      });
+    }
   };
+  const handleNext = async() => {
+    setIsLoading(true);
+    try{
+      // step < 3 && setStep(step + 1);
+      console.log(dashboardData)
+    }catch(error){
+      toast.error("Error while step2");
+    }finally{
+      setIsLoading(false);
+    }
+  }
 
-  const handleFileUpload = (event) => {
+  const handleFileUpload = async(event) => {
     const file = event.target.files?.[0];
     if (file && file.type === "text/csv") {
-      setDashboardData(prev => ({ ...prev, csvFile: file }));
-      setTimeout(() => {
-        const mockFields = ["date", "sales", "profit", "customers", "region"];
-        setDashboardData(prev => ({
-          ...prev,
-          dataFields: mockFields,
-          parsedData: {
-            fields: mockFields,
-            preview: [
-              { date: "2024-01", sales: 15000, profit: 3000, customers: 45, region: "East" },
-              { date: "2024-02", sales: 18000, profit: 3600, customers: 52, region: "West" },
-              { date: "2024-03", sales: 16500, profit: 3300, customers: 48, region: "North" },
-            ],
-          },
-        }));
-      }, 1000);
+      setIsLoading(true);
+      try {
+        const updatedFields = {dataSource:'csv',csvFile:file};
+        const result = await updateStep2DataSource(dashboardId,updatedFields);
+        setDashboardData({csvFileName: file.name, dataFields: result.headers, parsedData: result.sampleData});
+      } catch (error) {
+        toast.error("Error While Uploading CSV File");
+      }finally{
+        setIsLoading(false);
+      }
+    }
+    else{
+      toast.error("Invalid File Type")
     }
   };
 
-  const handleApiPreview = () => {
+  const handleRemoveCsvFile = ()=>{
+    setDashboardData({csvFileName:'', dataFields:[] , parsedData:null})
+  }
+
+  const handleApiPreview = async() => {
     if (dashboardData.apiUrl) {
-      setTimeout(() => {
-        const mockFields = ["timestamp", "value", "category", "status"];
-        setDashboardData(prev => ({
-          ...prev,
-          dataFields: mockFields,
-          parsedData: {
-            fields: mockFields,
-            preview: [
-              { timestamp: "2024-01-01", value: 100, category: "A", status: "active" },
-              { timestamp: "2024-01-02", value: 150, category: "B", status: "active" },
-              { timestamp: "2024-01-03", value: 120, category: "A", status: "inactive" },
-            ],
-          },
-        }));
-      }, 1500);
+      setIsLoading(true);
+      try {
+        const {apiMethod,apiUrl,apiParams,apiBody,apiDataPath} = dashboardData;
+        let updatedFields = {dataSource:'api',method:apiMethod,endpoint:apiUrl};
+        if(apiParams) updatedFields.params = apiParams;  
+        if(apiBody) updatedFields.body = apiBody;
+        if(apiDataPath) updatedFields.dataPath = apiDataPath;
+        const result = await updateStep2DataSource(dashboardId,updatedFields);
+        console.log(result);
+        setDashboardData({dataFields: result.headers, parsedData: result.sampleData});
+      } catch (error) {
+        toast.error("Error While Fetching Preview");
+      }finally{
+        setIsLoading(false);
+      }
     }
   };
 
   const handleSimulatedData = (datasetKey) => {
     const dataset = sampleDatasets[datasetKey];
     if (dataset) {
-      setDashboardData(prev => ({
-        ...prev,
+      setDashboardData({
         selectedDataset: datasetKey,
         dataFields: dataset.fields,
-        parsedData: {
-          fields: dataset.fields,
-          preview: dataset.preview,
-        },
-      }));
+        parsedData: dataset.preview,
+      });
     }
   };
 
@@ -131,15 +148,16 @@ const Step2DataSource = ({ dashboardData, setDashboardData, onBack, onNext, onCa
         {/* Data Source Configuration */}
         {dashboardData.dataSource === "csv" && (
           <div className="space-y-4">
-            <div>
+            {!dashboardData.csvFileName && <div>
               <Label htmlFor="csv-file">Upload CSV File</Label>
-              <Input id="csv-file" type="file" accept=".csv" onChange={handleFileUpload} className="mt-2 cursor-pointer" />
-            </div>
-            {dashboardData.csvFile && (
-              <div className="p-3 bg-primary/10 rounded-lg">
+              <Input id="csv-file" type="file" accept=".csv" onChange={handleFileUpload} className="mt-2 cursor-pointer"/>
+            </div>}
+            {dashboardData.csvFileName && (
+              <div className="flex items-center gap-10 p-3 rounded-lg">
                 <p className="text-sm font-medium dark:text-green-200">
-                  ✅ File uploaded: {dashboardData.csvFile.name}
+                  ✅ File uploaded: {dashboardData.csvFileName}
                 </p>
+                <Button variant={"destructive"} className={'cursor-pointer'} onClick={handleRemoveCsvFile}> Remove </Button>
               </div>
             )}
           </div>
@@ -147,16 +165,72 @@ const Step2DataSource = ({ dashboardData, setDashboardData, onBack, onNext, onCa
 
         {dashboardData.dataSource === "api" && (
           <div className="space-y-4">
-            <div>
+            {/* API Endpoint */}
+            <div className="space-y-3">
               <Label htmlFor="api-url">API Endpoint URL</Label>
               <Input
                 id="api-url"
                 placeholder="https://api.example.com/data"
                 value={dashboardData.apiUrl}
-                onChange={e => setDashboardData(prev => ({ ...prev, apiUrl: e.target.value }))}
+                onChange={e => setDashboardData({ apiUrl: e.target.value })}
               />
             </div>
-            <Button onClick={handleApiPreview} disabled={!dashboardData.apiUrl} className={"cursor-pointer"}>
+
+            {/* Method */}
+            <div className="flex items-center gap-5">
+              <Label>HTTP Method</Label>
+              <Select
+                value={dashboardData.apiMethod || "GET"}
+                onValueChange={(value) => setDashboardData({ apiMethod: value })}
+              >
+                <SelectTrigger className="cursor-pointer">
+                  <SelectValue placeholder="Select Method" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="GET" className={"cursor-pointer"}>GET</SelectItem>
+                  <SelectItem value="POST" className={"cursor-pointer"}>POST</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Params (Query Params) */}
+            <div className="space-y-3">
+              <Label>Query Params (JSON format) (optional)</Label>
+              <Input
+                placeholder='e.g. {"userId": 1}'
+                value={dashboardData.apiParams || ""}
+                onChange={e => setDashboardData({ apiParams: e.target.value })}
+              />
+            </div>
+
+            {/* Body (for POST requests) */}
+            {dashboardData.apiMethod === "POST" && (
+              <div className="space-y-3">
+                <Label>Request Body (JSON format) (optional)</Label>
+                <Input
+                  placeholder='e.g. {"key": "value"}'
+                  value={dashboardData.apiBody || ""}
+                  onChange={e => setDashboardData({ apiBody: e.target.value })}
+                />
+              </div>
+            )}
+
+            {/* Data Path */}
+            <div className="space-y-3">
+              <Label>Data Path (optional)</Label>
+              <Input
+                placeholder='e.g. "data.records"'
+                value={dashboardData.apiDataPath}
+                onChange={e => setDashboardData({ apiDataPath: e.target.value })}
+              />
+            </div>
+
+            {/* Fetch Preview */}
+            <Button
+              onClick={handleApiPreview}
+              disabled={!dashboardData.apiUrl}
+              className="cursor-pointer"
+            >
               <Eye className="h-4 w-4 mr-2" />
               Fetch Preview
             </Button>
@@ -172,7 +246,7 @@ const Step2DataSource = ({ dashboardData, setDashboardData, onBack, onNext, onCa
                   key={key}
                   className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                     dashboardData.selectedDataset === key
-                      ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                      ? "border-primary bg-primary/10"
                       : "border-gray-200 hover:border-gray-300 dark:border-gray-700"
                   }`}
                   onClick={() => handleSimulatedData(key)}
@@ -209,7 +283,7 @@ const Step2DataSource = ({ dashboardData, setDashboardData, onBack, onNext, onCa
                       </div>
                     ))}
                   </div>
-                  {dashboardData.parsedData.preview.slice(0, 3).map((row, idx) => (
+                  {dashboardData.parsedData.slice(0,5).map((row, idx) => (
                     <div key={idx} className="grid grid-cols-4 gap-2 py-1 text-muted-foreground">
                       {dashboardData.dataFields.slice(0, 4).map(field => (
                         <div key={field} className="truncate">
@@ -232,8 +306,9 @@ const Step2DataSource = ({ dashboardData, setDashboardData, onBack, onNext, onCa
             <Button variant="outline" onClick={onBack} className={"cursor-pointer"}>
               Back
             </Button>
-            <Button onClick={onNext} disabled={!dashboardData.parsedData} className={"cursor-pointer"}>
-              Next
+            <Button onClick={handleNext} disabled={!dashboardData.parsedData || isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isLoading ? "Processing..." : "Next"}
             </Button>
           </div>
         </div>

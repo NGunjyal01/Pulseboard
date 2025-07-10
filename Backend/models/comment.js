@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');s
+const mongoose = require('mongoose');
 
 const commentSchema = new mongoose.Schema({
   dashboard: { type: mongoose.Schema.Types.ObjectId, ref: 'Dashboard', required: true },

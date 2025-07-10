@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Plus } from 'lucide-react';
 import ChartConfigForm from './ChartConfigForm';
+import useDashboardStore from '@/store/useDashboardStore';
 
-const Step3ConfigureCharts = ({ dashboardData, setDashboardData, onBack, onCreate, onCancel }) => {
+const Step3ConfigureCharts = ({ onBack, onCancel }) => {
+  const {dashboardData,setDashboardData,step,setStep} = useDashboardStore();
   const addChart = () => {
     const newChart = {
       id: `chart-${Date.now()}`,
@@ -34,6 +36,10 @@ const Step3ConfigureCharts = ({ dashboardData, setDashboardData, onBack, onCreat
       charts: prev.charts.filter(chart => chart.id !== chartId),
     }));
   };
+
+  const handleCreate = ()=>{
+
+  }
 
   return (
     <Card>
@@ -99,7 +105,7 @@ const Step3ConfigureCharts = ({ dashboardData, setDashboardData, onBack, onCreat
             <Button variant="outline" onClick={onBack}>
               Back
             </Button>
-            <Button onClick={onCreate} disabled={dashboardData.charts.length === 0}>
+            <Button onClick={handleCreate} disabled={dashboardData.charts.length === 0}>
               Create Dashboard
             </Button>
           </div>
