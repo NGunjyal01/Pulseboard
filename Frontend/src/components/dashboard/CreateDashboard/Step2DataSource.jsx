@@ -7,7 +7,7 @@ import { sampleDatasets } from './constants';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import useDashboardStore from "@/store/useDashboardStore";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { updateStep2DataSource } from "@/services/dashboardAPI";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -24,21 +24,17 @@ const Step2DataSource = ({ onBack, onCancel }) => {
         dataFields: [],
         csvFileName: "",
         apiUrl: "",
+        apiMethod: '',
+        apiParams: {},
+        apiBody: {},
+        apiDataPath: '',
         selectedDataset: "",
+        parsedData: null,
+        dataFields: [],
       });
     }
   };
-  const handleNext = async() => {
-    setIsLoading(true);
-    try{
-      // step < 3 && setStep(step + 1);
-      console.log(dashboardData)
-    }catch(error){
-      toast.error("Error while step2");
-    }finally{
-      setIsLoading(false);
-    }
-  }
+  const handleNext = async() => step < 3 && setStep(step + 1);
 
   const handleFileUpload = async(event) => {
     const file = event.target.files?.[0];
@@ -83,14 +79,24 @@ const Step2DataSource = ({ onBack, onCancel }) => {
     }
   };
 
-  const handleSimulatedData = (datasetKey) => {
+  const handleSimulatedData = async(datasetKey) => {
     const dataset = sampleDatasets[datasetKey];
-    if (dataset) {
-      setDashboardData({
-        selectedDataset: datasetKey,
-        dataFields: dataset.fields,
-        parsedData: dataset.preview,
-      });
+    if (dataset && dashboardData.selectedDataset !== datasetKey) {
+      setIsLoading(true);
+      try {
+        const {name,fields,preview} = dataset;
+        setDashboardData({
+          selectedDataset: datasetKey,
+          dataFields: fields,
+          parsedData: preview,
+        });
+        const updatedFields = {dataSource:'simulated',type:name,sampleData:preview}
+        await updateStep2DataSource(dashboardId,updatedFields);
+      } catch (error) {
+        
+      }finally{
+        setIsLoading(false);
+      }
     }
   };
 

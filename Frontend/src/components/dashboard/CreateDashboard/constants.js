@@ -6,13 +6,8 @@ export const chartTypes = [
   { id: "bar", name: "Bar Chart", icon: BarChart3, description: "Compare values across categories" },
   { id: "area", name: "Area Chart", icon: TrendingUp, description: "Show cumulative data" },
   { id: "composed", name: "Composed Chart", icon: BarChart3, description: "Combine multiple chart types" },
-  { id: "pie", name: "Pie Chart", icon: PieChart, description: "Show proportions" },
-  { id: "radar", name: "Radar Chart", icon: TrendingUp, description: "Multi-dimensional data" },
-  { id: "radialBar", name: "Radial Bar Chart", icon: PieChart, description: "Circular bar chart" },
-  { id: "scatter", name: "Scatter Plot", icon: TrendingUp, description: "Show correlations" },
-  { id: "funnel", name: "Funnel Chart", icon: TrendingUp, description: "Show conversion stages" },
-  { id: "treemap", name: "Treemap", icon: BarChart3, description: "Hierarchical data visualization" },
-  { id: "sankey", name: "Sankey Diagram", icon: TrendingUp, description: "Flow between nodes" },
+  // { id: "pie", name: "Pie Chart", icon: PieChart, description: "Show proportions" },
+  // { id: "radar", name: "Radar Chart", icon: TrendingUp, description: "Multi-dimensional data" },
 ];
 
 export const mockFriends = [

@@ -134,7 +134,7 @@ const simulateData = async (req, res) => {
     
     return res.status(200).json({
       success: true,
-      sampleData: data
+      sampleData: sampleData
     });
   } catch (error) {
     return res.status(500).json({
@@ -144,4 +144,42 @@ const simulateData = async (req, res) => {
   }
 };
 
-module.exports = {uploadCSV,connectAPI,simulateData}
+const publishDashboard = async (req, res) => {
+  try {
+    const { visualizations } = req.body;
+    const validTypes = ['line', 'bar', 'area', 'composed'];
+    
+    for (const viz of visualizations) {
+      if (!validTypes.includes(viz.type)) {
+        return res.status(400).json({
+          success: false,
+          error: `Invalid chart type: ${viz.type}`
+        });
+      }
+    }
+
+    const dashboard = await Dashboard.findByIdAndUpdate(req.params.id,{
+      status: 'published',
+      visualizations
+    },{ new: true });
+    
+    if (!dashboard) {
+      return res.status(404).json({
+        success: false,
+        error: 'Dashboard not found'
+      });
+    }
+    
+    return res.status(200).json({
+      success: true,
+      dashboard
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to publish dashboard'
+    });
+  }
+};
+
+module.exports = {uploadCSV,connectAPI,simulateData,publishDashboard}

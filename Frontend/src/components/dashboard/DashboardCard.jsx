@@ -15,8 +15,8 @@ import { formatDistanceToNow } from "date-fns";
 const DashboardCard = ({
   title,
   description,
-  lastModified,
-  owner,
+  updatedAt,
+  createdBy,
   collaborators = 0,
   isPublic = false,
   onClick,
@@ -84,13 +84,13 @@ const DashboardCard = ({
         <div className="flex items-center justify-between">
             {/* Owner info */}
             <div className="flex items-center gap-2">
-            <Avatar className="w-6 h-6">
-                <AvatarImage src={owner.avatar} />
+            {/* <Avatar className="w-6 h-6">
+                <AvatarImage src={createdBy.avatar} />
                 <AvatarFallback className="text-xs bg-primary text-primary-foreground">
-                {owner.initials}
+                {createdBy.initials}
                 </AvatarFallback>
-            </Avatar>
-            <span className="text-sm text-muted-foreground">{owner.name}</span>
+            </Avatar> */}
+            <span className="text-sm text-muted-foreground">{createdBy.firstName}</span>
             </div>
 
             {/* Badges */}
@@ -109,7 +109,7 @@ const DashboardCard = ({
         </div>
 
         <p className="text-xs text-muted-foreground mt-3">
-            Modified {formatDistanceToNow(new Date(lastModified), { addSuffix: true })}
+            Modified {formatDistanceToNow(new Date(updatedAt), { addSuffix: true })}
         </p>
         </CardContent>
     </Card>

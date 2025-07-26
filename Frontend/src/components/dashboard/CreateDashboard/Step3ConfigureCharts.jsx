@@ -1,44 +1,55 @@
 // src/components/dashboard/CreateDashboard/Step3ConfigureCharts.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Plus } from 'lucide-react';
 import ChartConfigForm from './ChartConfigForm';
 import useDashboardStore from '@/store/useDashboardStore';
+import { publishDashboard } from '@/services/dashboardAPI';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router';
 
 const Step3ConfigureCharts = ({ onBack, onCancel }) => {
-  const {dashboardData,setDashboardData,step,setStep} = useDashboardStore();
+  const [isLoading,setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const {dashboardId,dashboardData,setDashboardData,resetDashboardData} = useDashboardStore();
   const addChart = () => {
     const newChart = {
       id: `chart-${Date.now()}`,
       title: `Chart ${dashboardData.charts.length + 1}`,
-      type: "bar",
+      type: "line",
     };
-    setDashboardData(prev => ({
-      ...prev,
-      charts: [...prev.charts, newChart],
-    }));
+    setDashboardData({
+      charts: [...dashboardData.charts, newChart],
+    });
   };
 
   const updateChart = (chartId, updates) => {
-    setDashboardData(prev => ({
-      ...prev,
-      charts: prev.charts.map(chart => 
+    setDashboardData({
+      charts: dashboardData.charts.map(chart =>
         chart.id === chartId ? { ...chart, ...updates } : chart
-      ),
-    }));
+      )
+    });
   };
 
   const removeChart = (chartId) => {
-    setDashboardData(prev => ({
-      ...prev,
-      charts: prev.charts.filter(chart => chart.id !== chartId),
-    }));
+    setDashboardData({
+      charts: dashboardData.charts.filter(chart => chart.id !== chartId),
+    });
   };
 
-  const handleCreate = ()=>{
-
+  const handleCreate = async()=>{
+    setIsLoading(true);
+    try {
+      const updatedFields = {visualizations: dashboardData.charts}
+      await publishDashboard(dashboardId,updatedFields,navigate);
+      resetDashboardData();
+    } catch (error) {
+      toast.error("Error While Publishing Dashboard");
+    }finally{
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -72,7 +83,7 @@ const Step3ConfigureCharts = ({ onBack, onCancel }) => {
             />
           ))}
 
-          <Button onClick={addChart} variant="outline" className="w-full bg-transparent">
+          <Button onClick={addChart} variant="outline" className="w-full bg-transparent cursor-pointer">
             <Plus className="h-4 w-4 mr-2" />
             Add Chart
           </Button>
@@ -105,8 +116,9 @@ const Step3ConfigureCharts = ({ onBack, onCancel }) => {
             <Button variant="outline" onClick={onBack}>
               Back
             </Button>
-            <Button onClick={handleCreate} disabled={dashboardData.charts.length === 0}>
-              Create Dashboard
+            <Button onClick={handleCreate} disabled={dashboardData.charts.length === 0 || isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isLoading ? "Processing..." : "Create Dashboard"}
             </Button>
           </div>
         </div>

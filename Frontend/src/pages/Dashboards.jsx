@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import DashboardCard from "@/components/dashboard/DashboardCard";
 import { Button } from "@/components/ui/button";
@@ -6,171 +6,49 @@ import { Input } from "@/components/ui/input";
 import { LayoutGrid, List, Plus, Search } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useNavigate } from "react-router";
-
-// Mock data
-const mockDashboards = [
-    {
-    id: "1",
-    title: "Sales Analytics Q4",
-    description: "Revenue metrics and sales performance tracking",
-    lastModified: new Date(Date.now() - 1000 * 60 * 60 * 2),
-    owner: { name: "Sarah Chen", initials: "SC" },
-    collaborators: 3,
-    isPublic: false,
-    },
-    {
-    id: "2",
-    title: "Product Usage Dashboard",
-    description: "User engagement and feature adoption metrics",
-    lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24),
-    owner: { name: "Mike Johnson", initials: "MJ" },
-    collaborators: 5,
-    isPublic: true,
-    },
-    {
-    id: "3",
-    title: "Marketing Campaign ROI",
-    description: "Campaign performance and conversion tracking",
-    lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
-    owner: { name: "Emma Davis", initials: "ED" },
-    collaborators: 2,
-    isPublic: false,
-    },
-    {
-    id: "4",
-    title: "Operations KPIs",
-    description: "Key performance indicators for operational efficiency",
-    lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-    owner: { name: "Alex Kim", initials: "AK" },
-    collaborators: 1,
-    isPublic: true,
-    },
-    {
-    id: "4",
-    title: "Operations KPIs",
-    description: "Key performance indicators for operational efficiency",
-    lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-    owner: { name: "Alex Kim", initials: "AK" },
-    collaborators: 1,
-    isPublic: true,
-    },
-        {
-    id: "4",
-    title: "Operations KPIs",
-    description: "Key performance indicators for operational efficiency",
-    lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-    owner: { name: "Alex Kim", initials: "AK" },
-    collaborators: 1,
-    isPublic: true,
-    },
-        {
-    id: "4",
-    title: "Operations KPIs",
-    description: "Key performance indicators for operational efficiency",
-    lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-    owner: { name: "Alex Kim", initials: "AK" },
-    collaborators: 1,
-    isPublic: true,
-    },
-        {
-    id: "4",
-    title: "Operations KPIs",
-    description: "Key performance indicators for operational efficiency",
-    lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-    owner: { name: "Alex Kim", initials: "AK" },
-    collaborators: 1,
-    isPublic: true,
-    },
-        {
-    id: "4",
-    title: "Operations KPIs",
-    description: "Key performance indicators for operational efficiency",
-    lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-    owner: { name: "Alex Kim", initials: "AK" },
-    collaborators: 1,
-    isPublic: true,
-    },
-        {
-    id: "4",
-    title: "Operations KPIs",
-    description: "Key performance indicators for operational efficiency",
-    lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-    owner: { name: "Alex Kim", initials: "AK" },
-    collaborators: 1,
-    isPublic: true,
-    },
-        {
-    id: "4",
-    title: "Operations KPIs",
-    description: "Key performance indicators for operational efficiency",
-    lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-    owner: { name: "Alex Kim", initials: "AK" },
-    collaborators: 1,
-    isPublic: true,
-    },
-        {
-    id: "4",
-    title: "Operations KPIs",
-    description: "Key performance indicators for operational efficiency",
-    lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-    owner: { name: "Alex Kim", initials: "AK" },
-    collaborators: 1,
-    isPublic: true,
-    },
-        {
-    id: "4",
-    title: "Operations KPIs",
-    description: "Key performance indicators for operational efficiency",
-    lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-    owner: { name: "Alex Kim", initials: "AK" },
-    collaborators: 1,
-    isPublic: true,
-    },
-        {
-    id: "4",
-    title: "Operations KPIs",
-    description: "Key performance indicators for operational efficiency",
-    lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-    owner: { name: "Alex Kim", initials: "AK" },
-    collaborators: 1,
-    isPublic: true,
-    },
-        {
-    id: "4",
-    title: "Operations KPIs",
-    description: "Key performance indicators for operational efficiency",
-    lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-    owner: { name: "Alex Kim", initials: "AK" },
-    collaborators: 1,
-    isPublic: true,
-    },
-];
+import useDashboardListStore from "@/store/useDashboardListStore";
+import { getAllDashboard } from "@/services/dashboardAPI";
 
 const Dashboards = () => {
+    const {dashboards,setDashboards} = useDashboardListStore();
     const [searchQuery, setSearchQuery] = useState("");
-    const [filteredDashboards, setFilteredDashboards] = useState(mockDashboards);
+    const [filteredDashboards, setFilteredDashboards] = useState(dashboards);
     const [viewMode, setViewMode] = useState('grid');
     const isMobile = useIsMobile();
     const navigate = useNavigate();
 
-    const handleSearch = (query) => {
-    setSearchQuery(query);
-    if (query.trim() === "") {
-        setFilteredDashboards(mockDashboards);
-    } else {
-        const filtered = mockDashboards.filter((dashboard) =>
-        [dashboard.title, dashboard.description, dashboard.owner.name]
-            .join(" ")
-            .toLowerCase()
-            .includes(query.toLowerCase())
-        );
-        setFilteredDashboards(filtered);
-    }
-    };
+    useEffect(()=>{
+        const fetchDashboards = async () => {
+        try {
+            const data = await getAllDashboard(); // assuming this returns an array
+            setDashboards(data.dashboards); // update Zustand store
+            setFilteredDashboards(data.dashboards); // update local filtered copy
+            } catch (err) {
+            console.error("Failed to fetch dashboards:", err);
+            }
+        };
+        console.log('caleed')
+        fetchDashboards();
+    },[]);
 
+    const handleSearch = (query) => {
+        setSearchQuery(query);
+        const baseList = dashboards;
+        if (query.trim() === "") {
+            setFilteredDashboards(baseList);
+        } else {
+            const filtered = baseList.filter((dashboard) =>
+            [dashboard.title, dashboard.description, dashboard.owner?.name ?? ""]
+                .join(" ")
+                .toLowerCase()
+                .includes(query.toLowerCase())
+            );
+            setFilteredDashboards(filtered);
+        }
+    };
     const handleDashboardClick = (id) => {
-    console.log("Opening dashboard:", id);
-    // TODO: Implement navigation
+        console.log("Opening dashboard:", id);
+        // TODO: Implement navigation
     };
 
     return (
@@ -252,7 +130,7 @@ const Dashboards = () => {
             }>
             {filteredDashboards.map((dashboard) => (
                 <DashboardCard
-                key={dashboard.id}
+                key={dashboard._id}
                 {...dashboard}
                 onClick={() => handleDashboardClick(dashboard.id)}
                 />

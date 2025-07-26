@@ -13,4 +13,6 @@ export const dashboardEndpoints = {
     UPLOAD_CSV_API: BASE_URL + '/dashboard/step2/upload-csv',
     CONNECTAPI_API: BASE_URL + '/dashboard/step2/connectAPI',
     SIMULATE_DATA_API: BASE_URL + '/dashboard/step2/simulate-data',
+    PUBLISH_DASHBOARD_API: BASE_URL + '/dashboard/publish',
+    GET_ALL_DASHBOARD_API: BASE_URL + '/dashboard/getAll'
 }
