@@ -16,7 +16,6 @@ const Dashboards = () => {
     const [viewMode, setViewMode] = useState('grid');
     const isMobile = useIsMobile();
     const navigate = useNavigate();
-
     useEffect(()=>{
         const fetchDashboards = async () => {
         try {

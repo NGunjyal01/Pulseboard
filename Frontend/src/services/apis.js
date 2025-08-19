@@ -16,3 +16,11 @@ export const dashboardEndpoints = {
     PUBLISH_DASHBOARD_API: BASE_URL + '/dashboard/publish',
     GET_ALL_DASHBOARD_API: BASE_URL + '/dashboard/getAll'
 }
+
+export const friendsEndpoints = {
+    GET_ALL_FRIENDS_API: BASE_URL + '/friends/getAll',
+    REMOVE_FRIEND_API: BASE_URL + 'friends//remove',
+    SEND_REQUEST_API: BASE_URL + '/friendRequest/send',
+    ACCEPT_REQUEST_API: BASE_URL + '/friendRequest/accept',
+    REJECT_REQUEST_API: BASE_URL + '/friendRequest/reject',
+}

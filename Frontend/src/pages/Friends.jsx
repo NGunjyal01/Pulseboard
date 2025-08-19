@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -24,52 +24,70 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { ArrowLeft, UserPlus, Search, Mail, UserMinus, Users, Plus } from "lucide-react"
+import { ArrowLeft, UserPlus, Search, Mail, UserMinus, Users, Plus, Loader2 } from "lucide-react"
+import { getAllFriends, sendFriendRequest } from "@/services/friendsAPI"
 
-const mockFriends = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "john@company.com",
-    avatar: "/placeholder.svg?height=60&width=60",
-    status: "online",
-    mutualFriends: 5,
-    joinedDate: "2024-01-10",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    email: "jane@company.com",
-    avatar: "/placeholder.svg?height=60&width=60",
-    status: "offline",
-    mutualFriends: 3,
-    joinedDate: "2024-02-15",
-  },
-  {
-    id: 3,
-    name: "Bob Wilson",
-    email: "bob@company.com",
-    avatar: "/placeholder.svg?height=60&width=60",
-    status: "online",
-    mutualFriends: 8,
-    joinedDate: "2024-01-20",
-  },
-  {
-    id: 4,
-    name: "Alice Johnson",
-    email: "alice@company.com",
-    avatar: "/placeholder.svg?height=60&width=60",
-    status: "offline",
-    mutualFriends: 2,
-    joinedDate: "2024-03-05",
-  },
-]
+const AddFriend = ({ isOpen, setIsOpen, newFriendEmail, setNewFriendEmail, handleAddFriend, isLoading }) => {
+
+  const handleClose = (open)=>{
+    if(open){
+      setIsOpen(true);
+    }
+    else{
+      setNewFriendEmail('');
+      setIsOpen(false);
+    }
+  }
+
+  return (
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogTrigger asChild>
+        <Button className="cursor-pointer">
+          <UserPlus className="h-4 w-4 mr-2" />
+          Add Friend
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add Friend</DialogTitle>
+          <DialogDescription>Send a friend request by email address</DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <Input
+            placeholder="Enter email address"
+            value={newFriendEmail}
+            onChange={(e) => setNewFriendEmail(e.target.value)}
+          />
+          <div className="flex justify-end gap-2">
+            <Button 
+              variant="outline" 
+              className="cursor-pointer" 
+              onClick={() => {setNewFriendEmail(''); setIsOpen(false);}}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleAddFriend} 
+              className="cursor-pointer" 
+              disabled={!newFriendEmail.trim() || isLoading}
+            >
+              {!isLoading && <Mail className="h-4 w-4 mr-2" />}
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isLoading ? "Processing..." : "Send Request"}
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
 
 const Friends = () => {
   const [searchQuery, setSearchQuery] = useState("")
-  const [friends, setFriends] = useState(mockFriends)
+  const [friends, setFriends] = useState([])
   const [newFriendEmail, setNewFriendEmail] = useState("")
   const [isAddFriendDialogOpen, setIsAddFriendDialogOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate()
 
   const filteredFriends = friends.filter(
@@ -78,20 +96,16 @@ const Friends = () => {
       friend.email.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const handleAddFriend = () => {
-    if (newFriendEmail.trim()) {
-      const newFriend = {
-        id: Date.now(),
-        name: newFriendEmail.split("@")[0],
-        email: newFriendEmail,
-        avatar: "/placeholder.svg?height=60&width=60",
-        status: "offline",
-        mutualFriends: 0,
-        joinedDate: new Date().toISOString().split("T")[0],
-      }
-      setFriends((prev) => [...prev, newFriend])
-      setNewFriendEmail("")
-      setIsAddFriendDialogOpen(false)
+  const handleAddFriend = async () => {
+    try {
+      setIsLoading(true);
+      await sendFriendRequest(newFriendEmail);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+      setNewFriendEmail("");
+      setIsAddFriendDialogOpen(false);
     }
   }
 
@@ -99,47 +113,43 @@ const Friends = () => {
     setFriends((prev) => prev.filter((friend) => friend.id !== friendId))
   }
 
+  useEffect(() => {
+    const fetchFriends = async () => {
+      try {
+        const friends = await getAllFriends();
+        setFriends(friends);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchFriends();
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b">
         <div className="flex h-16 items-center px-6">
-          <Button size="sm" className={'absolute cursor-pointer lg:py-5'} onClick={() => navigate("/dashboards")}>
+          <Button 
+            size="sm" 
+            className="absolute cursor-pointer lg:py-5" 
+            onClick={() => navigate("/dashboards")}
+          >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Dashboards
           </Button>
+
           <div className="flex-1 text-center">
             <h1 className="text-lg font-semibold">Friends</h1>
           </div>
-          <Dialog open={isAddFriendDialogOpen} onOpenChange={setIsAddFriendDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className={'absolute cursor-pointer right-[2%]'}>
-                <UserPlus className="h-4 w-4 mr-2" />
-                Add Friend
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add Friend</DialogTitle>
-                <DialogDescription>Send a friend request by email address</DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4">
-                <Input
-                  placeholder="Enter email address"
-                  value={newFriendEmail}
-                  onChange={(e) => setNewFriendEmail(e.target.value)}
-                />
-                <div className="flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => setIsAddFriendDialogOpen(false)}>
-                    Cancel
-                  </Button>
-                  <Button onClick={handleAddFriend} disabled={!newFriendEmail.trim()}>
-                    <Mail className="h-4 w-4 mr-2" />
-                    Send Request
-                  </Button>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
+          <AddFriend
+            isOpen={isAddFriendDialogOpen}
+            setIsOpen={setIsAddFriendDialogOpen}
+            newFriendEmail={newFriendEmail}
+            setNewFriendEmail={setNewFriendEmail}
+            handleAddFriend={handleAddFriend}
+            isLoading={isLoading}
+          />
         </div>
       </header>
 
@@ -167,36 +177,14 @@ const Friends = () => {
                   <p className="text-muted-foreground mb-4">
                     {searchQuery ? "Try adjusting your search" : "Start building your network by adding friends"}
                   </p>
-                  <Dialog open={isAddFriendDialogOpen} onOpenChange={setIsAddFriendDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Friend
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Add Friend</DialogTitle>
-                        <DialogDescription>Send a friend request by email address</DialogDescription>
-                      </DialogHeader>
-                      <div className="space-y-4">
-                        <Input
-                          placeholder="Enter email address"
-                          value={newFriendEmail}
-                          onChange={(e) => setNewFriendEmail(e.target.value)}
-                        />
-                        <div className="flex justify-end gap-2">
-                          <Button variant="outline" onClick={() => setIsAddFriendDialogOpen(false)}>
-                            Cancel
-                          </Button>
-                          <Button onClick={handleAddFriend} disabled={!newFriendEmail.trim()}>
-                            <Mail className="h-4 w-4 mr-2" />
-                            Send Request
-                          </Button>
-                        </div>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
+                  <AddFriend
+                    isOpen={isAddFriendDialogOpen}
+                    setIsOpen={setIsAddFriendDialogOpen}
+                    newFriendEmail={newFriendEmail}
+                    setNewFriendEmail={setNewFriendEmail}
+                    handleAddFriend={handleAddFriend}
+                    isLoading={isLoading}
+                  />
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -278,4 +266,4 @@ const Friends = () => {
   )
 }
 
-export default Friends;
+export default Friends
