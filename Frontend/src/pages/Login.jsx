@@ -19,7 +19,6 @@ const Login = () => {
         setIsLoading(true);
         try {
             await login(formData,navigate);
-            toast.success('Welcome back!');
         } catch {
             toast.error('Invalid credentials');
         }

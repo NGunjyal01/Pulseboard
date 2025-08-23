@@ -1,7 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET;
+
+const pfpUrl = process.env.PFP_URL;
 
 const signup = async (req, res) => {    
     try {
@@ -14,14 +14,15 @@ const signup = async (req, res) => {
             });
 
         const hashPassword = await bcrypt.hash(inputPassword, 10);
-        const user = await User.create({ firstName, lastName, email, password: hashPassword });
+        const user = await User.create({ firstName, lastName, email, password: hashPassword,
+            imageUrl: `${pfpUrl}${firstName} ${lastName}`
+         });
 
-        const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
         const {password,...userWithoutPassword} = user.toObject();
         return res.status(200).json({ 
             success: true,
             message: "User created successfully",
-            token, user:userWithoutPassword });
+            user:userWithoutPassword });
     } catch (error) {
         return res.status(500).json({
         success: false,

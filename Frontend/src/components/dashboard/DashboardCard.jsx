@@ -90,7 +90,7 @@ const DashboardCard = ({
                 {createdBy.initials}
                 </AvatarFallback>
             </Avatar> */}
-            <span className="text-sm text-muted-foreground">{createdBy.firstName}</span>
+            {/* <span className="text-sm text-muted-foreground">{createdBy.firstName}</span> */}
             </div>
 
             {/* Badges */}

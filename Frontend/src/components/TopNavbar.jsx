@@ -14,8 +14,11 @@ import {
 import { Search, Bell, User, Settings, LogOut } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ThemeToggle from "./ThemeToggle";
+import useAuthStore from "@/store/useAuthStore";
 
 const TopNavbar = () => {
+    const {user} = useAuthStore();
+    const {firstName, lastName, email, imageUrl} = user;
     const [notifications] = useState(3);
     const isMobile = useIsMobile();
 
@@ -60,10 +63,10 @@ const TopNavbar = () => {
                 size="icon"
                 className="rounded-full hover:bg-primary/10"
                 >
-                <Avatar className="h-8 w-8">
-                    <AvatarImage src="/placeholder.svg" alt="User" />
+                <Avatar className="size-8">
+                    <AvatarImage src={imageUrl} alt="User" />
                     <AvatarFallback className="bg-primary text-primary-foreground">
-                    JD
+                    {firstName[0]+lastName[0]}
                     </AvatarFallback>
                 </Avatar>
                 </Button>
@@ -71,25 +74,23 @@ const TopNavbar = () => {
             <DropdownMenuContent className="w-56" align="end" forceMount>
                 <div className="flex items-center gap-2 p-3">
                 <div className="flex flex-col space-y-0.5 leading-none">
-                    <p className="font-medium">John Doe</p>
-                    <p className="text-sm text-muted-foreground truncate">
-                    john@pulseboard.com
-                    </p>
+                    <p className="font-medium">{firstName + " " +lastName}</p>
+                    <p className="text-sm text-muted-foreground truncate">{email}</p>
                 </div>
                 </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="hover:bg-primary/10">
-                <User className="mr-2 h-4 w-4" />
-                Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem className="hover:bg-primary/10">
-                <Settings className="mr-2 h-4 w-4" />
-                Settings
-                </DropdownMenuItem>
+                    <DropdownMenuItem className="">
+                        <User className="mr-2 h-4 w-4" />
+                        Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="hover:bg-primary/10">
+                        <Settings className="mr-2 h-4 w-4" />
+                        Settings
+                    </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-destructive hover:bg-destructive/10">
-                <LogOut className="mr-2 h-4 w-4" />
-                Log out
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log out
                 </DropdownMenuItem>
             </DropdownMenuContent>
             </DropdownMenu>

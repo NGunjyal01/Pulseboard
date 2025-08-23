@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "axios"
 import { toast } from "sonner";
 import { authEndpoints } from "./apis";
 import useAuthStore from "@/store/useAuthStore";
@@ -26,7 +26,7 @@ export const signup = async(formData,navigate)=>{
         }
         else{
             console.log("Error During SignUp: ",error);
-            toast.error("Signup Failed");
+            toast.error(error.response.data.message);
             navigate("/signup");
         }
     }
@@ -60,4 +60,3 @@ export const login = async(formData,navigate)=>{
         }
     }
 }
-

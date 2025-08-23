@@ -31,9 +31,7 @@ const Signup = () => {
         setIsLoading(true);
         try {
             await signup(formData,navigate);
-            toast.success('Account created successfully!');
         } catch {
-            toast.error('Failed to create account');
         }
         finally{
             setIsLoading(false);

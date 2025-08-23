@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios from "@/utils/axiosConfig";
 import { friendsEndpoints } from "./apis"
 import { toast } from "sonner";
 

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "@/utils/axiosConfig";;
 import { toast } from "sonner";
 import { dashboardEndpoints } from "./apis";
 
