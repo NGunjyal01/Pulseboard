@@ -4,10 +4,35 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { themes1 } from "@/utils/constants"
+import { useThemeStore } from "@/store/useThemeStore"
+import { useState } from "react"
 
-const accentColors = themes1
 
-const PreferencesTab = ({ preferences, setPreferences, theme, setTheme, onSave }) => {
+const PreferencesTab = () => {
+
+    const {mode:initialMode,theme:initialTheme,toggleMode,setTheme:setNewTheme} = useThemeStore();
+    const [mode,setMode] = useState(initialMode);
+    const [theme,setTheme] = useState(initialTheme);
+    console.log(mode)
+    const accentColors = themes1[mode];
+    const [preferences, setPreferences] = useState({
+        notifications: true,
+        tooltips: true,
+    })
+    const hasChanges = (initialMode!==mode) || (initialTheme!==theme);
+    const handleSavePreferences = () => {
+        console.log("Preferences saved:", preferences)
+    }
+    const onSave = ()=>{
+        if(initialMode!==mode){
+            toggleMode();
+        }
+        if(initialTheme!==theme){
+            console.log(theme)
+            setNewTheme(theme);
+        }
+        console.log("save")
+    }
     return (
     <div className="space-y-6">
         <Card>
@@ -21,14 +46,13 @@ const PreferencesTab = ({ preferences, setPreferences, theme, setTheme, onSave }
                 <Label className="text-base">Theme Mode</Label>
                 <p className="text-sm text-muted-foreground">Choose your preferred theme</p>
             </div>
-            <Select value={theme} onValueChange={setTheme}>
-                <SelectTrigger className="w-32">
-                <SelectValue />
+            <Select value={mode} onValueChange={setMode}>
+                <SelectTrigger className="w-32 cursor-pointer">
+                    <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                <SelectItem value="light">Light</SelectItem>
-                <SelectItem value="dark">Dark</SelectItem>
-                <SelectItem value="system">System</SelectItem>
+                    <SelectItem className={'cursor-pointer'} value="light">Light</SelectItem>
+                    <SelectItem className={'cursor-pointer'} value="dark">Dark</SelectItem>
                 </SelectContent>
             </Select>
             </div>
@@ -40,12 +64,12 @@ const PreferencesTab = ({ preferences, setPreferences, theme, setTheme, onSave }
                 {accentColors.map((color) => (
                 <button
                     key={color.name}
-                    className={`w-12 h-12 rounded-lg ${color.color} ${
-                    preferences.accentColor === color.name
+                    className={`w-12 h-12 rounded-lg ${color.color} cursor-pointer ${
+                    theme === color.name
                         ? "ring-2 ring-offset-2 ring-gray-400 dark:ring-gray-600"
                         : ""
                     }`}
-                    onClick={() => setPreferences((prev) => ({ ...prev, accentColor: color.value }))}
+                    onClick={() => setTheme(color.name)}
                     title={color.name}
                 />
                 ))}
@@ -84,9 +108,9 @@ const PreferencesTab = ({ preferences, setPreferences, theme, setTheme, onSave }
         </CardContent>
         </Card>
 
-        <div className="flex justify-end">
-        <Button onClick={onSave}>Save Preferences</Button>
-        </div>
+        {hasChanges && <div className="flex justify-end">
+            <Button onClick={onSave} className={'cursor-pointer'}>Save Preferences</Button>
+        </div>}
     </div>
     )
 }

@@ -20,8 +20,6 @@ const AccountTab = ()=> {
     confirm: false
   })
   const [passwordErrors, setPasswordErrors] = useState({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState({ type: "", message: "" })
 
   const handlePasswordChange = (e) => {
     const { id, value } = e.target
@@ -64,32 +62,11 @@ const AccountTab = ()=> {
     e.preventDefault()
     
     if (!validatePasswordForm()) return
-    
-    setIsSubmitting(true)
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false)
-      setSubmitStatus({
-        type: "success",
-        message: "Password updated successfully!"
-      })
-      
-      // Reset form
-      setPasswordData({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: ""
-      })
-      
-      // Clear success message after 3 seconds
-      setTimeout(() => setSubmitStatus({ type: "", message: "" }), 3000)
-    }, 1500)
+    console.log('update password sucessfull')
   }
 
   const handleDeleteAccount = () => {
     if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-      // Add account deletion logic here
       console.log("Account deletion requested")
     }
   }
@@ -102,20 +79,6 @@ const AccountTab = ()=> {
           <CardDescription>Update your account password</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {submitStatus.type === "success" && (
-            <Alert variant="success" className="mb-4">
-              <CheckCircle2 className="h-4 w-4" />
-              <AlertDescription>{submitStatus.message}</AlertDescription>
-            </Alert>
-          )}
-          
-          {submitStatus.type === "error" && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{submitStatus.message}</AlertDescription>
-            </Alert>
-          )}
-          
           <form onSubmit={handlePasswordSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="currentPassword">Current Password</Label>
@@ -204,8 +167,8 @@ const AccountTab = ()=> {
               )}
             </div>
 
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Updating..." : "Update Password"}
+            <Button type="submit" className={'cursor-pointer'}>
+              {"Update Password"}
             </Button>
           </form>
         </CardContent>
@@ -227,7 +190,7 @@ const AccountTab = ()=> {
             <Button 
               variant="destructive" 
               onClick={handleDeleteAccount}
-              className="md:ml-4"
+              className="md:ml-4 cursor-pointer"
             >
               Delete Account
             </Button>

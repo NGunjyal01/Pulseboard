@@ -11,21 +11,13 @@ import AccountTab from "@/components/settings/AccountTab"
 import { useNavigate } from "react-router"
 
 const Settings = () => {
-    const [preferences, setPreferences] = useState({
-    notifications: true,
-    tooltips: true,
-    accentColor: "blue",
-    })
     const navigate = useNavigate();
-    const handleSavePreferences = () => {
-    console.log("Preferences saved:", preferences)
-    }
 
     return (
-    <div className="min-h-screen bg-background">
-        <header className="border-b">
+    <div className="min-h-screen bg-background text-foreground">
+        <header className="border-b border-border">
             <div className="flex h-16 items-center px-6">
-                <Button variant="ghost" size="sm" onClick={() => navigate("/dashboards")}>
+                <Button size="sm" onClick={()=>navigate('/dashboards')} className={"absolute lg:py-5 cursor-pointer"}>
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     Back to Dashboards
                 </Button>

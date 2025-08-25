@@ -20,7 +20,7 @@ export const themes1 = {
     dark:[
         { name: "default", color: "bg-[oklch(0.606_0.25_292.717)]" },
         { name: "red", color: "bg-[oklch(0.622_0.257_27.325)]" },
-        { name: "rose", color: "bg-[oklch(0.688_0.251_20.637)]" },
+        // { name: "rose", color: "bg-[oklch(0.688_0.251_20.637)]" },
         { name: "orange", color: "bg-[oklch(0.698_0.217_55.68)]" },
         // { name: "amber", color: "bg-[oklch(0.79_0.175_80.92)]" },
         { name: "yellow", color: "bg-[oklch(0.874_0.129_100)]" },

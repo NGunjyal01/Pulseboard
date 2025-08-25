@@ -146,7 +146,7 @@ const CreateTeam = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground">
       <header className="border-b">
         <div className="flex h-16 items-center px-6">
           <Button size="sm" className={'absolute cursor-pointer lg:py-5'} onClick={() => navigate('/teams')}>

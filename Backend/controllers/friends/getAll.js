@@ -2,7 +2,7 @@ const User = require("../../models/user");
 
 const getAll = async(req,res)=>{
     try {
-        const user = await User.findOne({_id:req.user.id}).populate("friends", "firstName lastName email _id");
+        const user = await User.findOne({_id:req.user.id}).populate("friends", "firstName lastName email _id imageUrl friends createdAt");
         console.log(user);
         const {friends} = user;
         return res.status(200).json({

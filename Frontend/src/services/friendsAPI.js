@@ -33,7 +33,7 @@ export const getAllFriends = async()=>{
 
 export const sendFriendRequest = async(emailId)=>{
     try{
-        const response = await axios.post(`${SEND_REQUEST_API}/${emailId}`,{},config);
+        const response = await axios.post(`${SEND_REQUEST_API}${emailId}`,{},config);
         console.log("SEND FRIEND REQUEST API RESPONSE............", response);
         if(!response.data.success){
             const error = new Error(response.data.message);
@@ -54,6 +54,52 @@ export const sendFriendRequest = async(emailId)=>{
         } else {
             console.log("Error During Send Friend Request: ", error);
             toast.error("Something went wrong while sending the friend request.");
+        }
+    }
+}
+
+export const acceptFriendRequest = async(emailId)=>{
+    try {
+        const response = await axios.post(`${ACCEPT_REQUEST_API}${emailId}`,{},config);
+        console.log("ACCEPT FRIEND REQUEST API RESPONSE............", response);
+        if(!response.data.success){
+            const error = new Error(response.data.message);
+            error.code = "CustomError";
+            throw error;
+        }
+        else{
+            toast.success("Friend request accepted!");
+            return response.data;
+        }
+    } catch (error) {
+        if(error.code==="CustomError"){
+            toast.error(error.message);
+        } else {
+            console.log("Error During Accepting Friend Request: ", error);
+            toast.error("Something went wrong while accepting request.");
+        }
+    }
+}
+
+export const removeFriend = async(emailId)=>{
+    try {
+        const response = await axios.post(REMOVE_FRIEND_API,{friendEmail:emailId},config);
+        console.log("REMOVE FRIEND API RESPONSE............", response);
+        if(!response.data.success){
+            const error = new Error(response.data.message);
+            error.code = "CustomError";
+            throw error;
+        }
+        else{
+            toast.success("Friend Removed Successfully!");
+            return response.data;
+        }
+    } catch (error) {
+        if(error.code==="CustomError"){
+            toast.error(error.message);
+        } else {
+            console.log("Error During Removing Friend: ", error);
+            toast.error("Something went wrong while removing friend.");
         }
     }
 }
