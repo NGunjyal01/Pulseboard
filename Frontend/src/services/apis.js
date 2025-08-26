@@ -24,4 +24,6 @@ export const friendsEndpoints = {
     SEND_REQUEST_API: BASE_URL + '/friendRequest/send/',
     ACCEPT_REQUEST_API: BASE_URL + '/friendRequest/accept/',
     REJECT_REQUEST_API: BASE_URL + '/friendRequest/reject/',
+    GET_INCOMING_REQUEST_API: BASE_URL + '/friendRequest/incoming',
+    GET_OUTGOING_REQUEST_API: BASE_URL + '/friendRequest/outgoing',
 }

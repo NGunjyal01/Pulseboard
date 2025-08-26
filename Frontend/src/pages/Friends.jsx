@@ -1,22 +1,14 @@
-import { useEffect } from "react"
 import { useNavigate } from "react-router"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, UserPlus, Mail, Users } from "lucide-react"
-import useFriendsStore from "@/store/useFriendsStore"
 import FriendsTab from "@/components/friends/FriendsTab"
 import IncomingRequestTab from "@/components/friends/IncomingRequestTab"
-import SentRequestTab from "@/components/friends/SentRequestTab"
+import OutgoingRequestTab from "@/components/friends/OutgoingRequestTab"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 
 const Friends = () => {
   const navigate = useNavigate();
-
-  const { friends, fetchFriends } = useFriendsStore();
-
-  useEffect(() => {
-    fetchFriends()
-  }, []);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -45,7 +37,6 @@ const Friends = () => {
               <TabsTrigger value="friends" className={'cursor-pointer'}>
                 <Users className="h-4 w-4 mr-2" />
                 Friends 
-                ({friends.length})
               </TabsTrigger>
               <TabsTrigger value="incoming" className={'cursor-pointer'}>
                 <UserPlus className="h-4 w-4 mr-2" />
@@ -69,7 +60,7 @@ const Friends = () => {
 
             {/* Outgoing Requests Tab */}
             <TabsContent value="outgoing">
-              <SentRequestTab/>
+              <OutgoingRequestTab/>
             </TabsContent>
           </Tabs>
         </div>

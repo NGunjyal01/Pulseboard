@@ -4,7 +4,6 @@ const FriendRequest = require("../../models/friendRequest");
 const send = async (req, res) => {
   try {
     const { to } = req.params;
-    console.log(to)
     const fromUser = req.user;
     const from = fromUser.id;
 
@@ -41,10 +40,12 @@ const send = async (req, res) => {
     }
 
     // Create and save the friend request
-    const newRequest = new FriendRequest({ from, to:toUserId });
+    let newRequest = new FriendRequest({ from, to:toUserId });
     await newRequest.save();
+    newRequest = await newRequest.populate("to", "firstName lastName email imageUrl");
     return res.status(200).json({
       success: true,
+      request: newRequest,
       message: "Friend request sent"
     });
   } catch (error) {

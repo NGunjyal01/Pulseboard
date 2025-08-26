@@ -2,7 +2,6 @@ const Dashboard = require("../../models/dashboard")
 
 const create = async (req, res) => {
   try {
-    console.log(req.user)
     const dashboard = new Dashboard({
       title: 'Untitled Dashboard',
       createdBy: req.user.id,

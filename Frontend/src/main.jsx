@@ -41,7 +41,6 @@ if (themeData) {
 }
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
     <BrowserRouter>
       <Routes>
         <Route index element={<Homepage/>} />
@@ -57,5 +56,4 @@ createRoot(document.getElementById('root')).render(
       </Routes>
       <Toaster/>
     </BrowserRouter>
-  </StrictMode>,
 );

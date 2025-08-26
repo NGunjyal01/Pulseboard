@@ -3,7 +3,9 @@ import { friendsEndpoints } from "./apis"
 import { toast } from "sonner";
 
 
-const { GET_ALL_FRIENDS_API,SEND_REQUEST_API,ACCEPT_REQUEST_API,REJECT_REQUEST_API,REMOVE_FRIEND_API } = friendsEndpoints;
+const { GET_ALL_FRIENDS_API,SEND_REQUEST_API,ACCEPT_REQUEST_API,REJECT_REQUEST_API,REMOVE_FRIEND_API,GET_INCOMING_REQUEST_API,
+    GET_OUTGOING_REQUEST_API
+ } = friendsEndpoints;
 const config ={
   withCredentials: true
 };
@@ -42,7 +44,7 @@ export const sendFriendRequest = async(emailId)=>{
         }
         else{
             toast.success("Friend request sent!");
-            return response.data;
+            return response.data.request;
         }
     }
     catch(error){
@@ -101,5 +103,51 @@ export const removeFriend = async(emailId)=>{
             console.log("Error During Removing Friend: ", error);
             toast.error("Something went wrong while removing friend.");
         }
+    }
+}
+
+export const getIncomingRequests = async()=>{
+    try {
+        const response = await axios.get(GET_INCOMING_REQUEST_API,config);
+        console.log("GET INCOMING REQUEST API RESPONSE..........................",response);
+        if(!response.data.success){
+            const error = new Error(response.data.message);
+            error.code = "CustomError";
+            throw error;
+        }
+        else{
+            // toast.success("Fetched Incoming Request!");
+            return response.data.incoming;
+        }
+    } catch (error) {
+        if(error.code==="CustomError"){
+            toast.error(error.message);
+        } else {
+            console.log("Error During Fetching Incoming Request: ", error);
+            // toast.error("Something went wrong while fetching friends list.");
+        }  
+    }
+}
+
+export const getOutgoingRequests = async()=>{
+    try {
+        const response = await axios.get(GET_OUTGOING_REQUEST_API,config);
+        console.log("GET OUTGOING REQUEST API RESPONSE..........................",response);
+        if(!response.data.success){
+            const error = new Error(response.data.message);
+            error.code = "CustomError";
+            throw error;
+        }
+        else{
+            // toast.success("Fetched Outgoing Request!");
+            return response.data.outgoing;
+        }
+    } catch (error) {
+        if(error.code==="CustomError"){
+            toast.error(error.message);
+        } else {
+            console.log("Error During Fetching Outgoing Request: ", error);
+            // toast.error("Something went wrong while fetching friends list.");
+        }  
     }
 }
