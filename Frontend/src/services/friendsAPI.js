@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 
 const { GET_ALL_FRIENDS_API,SEND_REQUEST_API,ACCEPT_REQUEST_API,REJECT_REQUEST_API,REMOVE_FRIEND_API,GET_INCOMING_REQUEST_API,
-    GET_OUTGOING_REQUEST_API
+    GET_OUTGOING_REQUEST_API, CANCEL_REQUEST_API
  } = friendsEndpoints;
 const config ={
   withCredentials: true
@@ -60,9 +60,9 @@ export const sendFriendRequest = async(emailId)=>{
     }
 }
 
-export const acceptFriendRequest = async(emailId)=>{
+export const acceptFriendRequest = async(id)=>{
     try {
-        const response = await axios.post(`${ACCEPT_REQUEST_API}${emailId}`,{},config);
+        const response = await axios.delete(`${ACCEPT_REQUEST_API}${id}`,{},config);
         console.log("ACCEPT FRIEND REQUEST API RESPONSE............", response);
         if(!response.data.success){
             const error = new Error(response.data.message);
@@ -79,6 +79,52 @@ export const acceptFriendRequest = async(emailId)=>{
         } else {
             console.log("Error During Accepting Friend Request: ", error);
             toast.error("Something went wrong while accepting request.");
+        }
+    }
+}
+
+export const rejectFriendRequest = async(id) =>{
+    try {
+        const response = await axios.delete(`${REJECT_REQUEST_API}${id}`,{},config);
+        console.log("REJECT FRIEND REQUEST API RESPONSE............", response);
+        if(!response.data.success){
+            const error = new Error(response.data.message);
+            error.code = "CustomError";
+            throw error;
+        }
+        else{
+            toast.success("Friend request rejected!");
+            return response.data;
+        }
+    } catch (error) {
+        if(error.code==="CustomError"){
+            toast.error(error.message);
+        } else {
+            console.log("Error During Rejecting Friend Request: ", error);
+            toast.error("Something went wrong while Rejecting request.");
+        }
+    }
+}
+
+export const cancelFriendRequest = async(id) =>{
+    try {
+        const response = await axios.delete(`${CANCEL_REQUEST_API}${id}`,{},config);
+        console.log("CANCEL FRIEND REQUEST API RESPONSE............", response);
+        if(!response.data.success){
+            const error = new Error(response.data.message);
+            error.code = "CustomError";
+            throw error;
+        }
+        else{
+            toast.success("Friend request cancelled!");
+            return response.data;
+        }
+    } catch (error) {
+        if(error.code==="CustomError"){
+            toast.error(error.message);
+        } else {
+            console.log("Error During Cancelling Friend Request: ", error);
+            toast.error("Something went wrong while Cancelling request.");
         }
     }
 }

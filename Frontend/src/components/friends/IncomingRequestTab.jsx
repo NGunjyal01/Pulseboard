@@ -8,7 +8,7 @@ import { useEffect } from "react"
 
 const IncomingRequestTab = () => {
     
-    const { incomingRequests, fetchIncomingRequests } = useFriendsStore();
+    const { incomingRequests, fetchIncomingRequests, acceptRequest, rejectRequest } = useFriendsStore();
 
     useEffect(()=>{
         fetchIncomingRequests();
@@ -63,14 +63,14 @@ const IncomingRequestTab = () => {
                                 Sent {new Date(createdAt).toLocaleDateString()}
                             </div>
                             <div className="flex gap-2">
-                                <Button size="sm" className="flex-1 cursor-pointer" onClick={() => handleAcceptRequest(id)}>
+                                <Button size="sm" className="flex-1 cursor-pointer" onClick={() => acceptRequest(id)}>
                                     Accept
                                 </Button>
                                 <Button
                                     variant="outline"
                                     size="sm"
                                     className="flex-1 bg-transparent cursor-pointer"
-                                    onClick={() => handleRejectRequest(id)}
+                                    onClick={() => rejectRequest(id)}
                                 >
                                     Reject
                                 </Button>

@@ -8,7 +8,7 @@ import { Mail } from "lucide-react"
 
 const OutgoingRequestTab = () => {
 
-    const { outgoingRequests, fetchOutgoingRequests } = useFriendsStore();
+    const { outgoingRequests, fetchOutgoingRequests, cancelRequest } = useFriendsStore();
 
     useEffect(()=>{
         fetchOutgoingRequests();
@@ -66,7 +66,7 @@ const OutgoingRequestTab = () => {
                                     variant="outline"
                                     size="sm"
                                     className="w-full bg-transparent cursor-pointer"
-                                    onClick={() => handleCancelRequest(id)}>
+                                    onClick={() => cancelRequest(id)}>
                                     Cancel Request
                                 </Button>
                             </div>

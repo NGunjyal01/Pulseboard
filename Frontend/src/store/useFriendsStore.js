@@ -1,6 +1,6 @@
 // src/store/useFriendsStore.js
 import { create } from "zustand";
-import { getAllFriends, getIncomingRequests, getOutgoingRequests, removeFriend, sendFriendRequest } from "@/services/friendsAPI";
+import { acceptFriendRequest, cancelFriendRequest, getAllFriends, getIncomingRequests, getOutgoingRequests, rejectFriendRequest, removeFriend, sendFriendRequest } from "@/services/friendsAPI";
 
 const useFriendsStore = create((set, get) => ({
     friends: [],
@@ -42,12 +42,12 @@ const useFriendsStore = create((set, get) => ({
         set({loading: true});
         try {
             await removeFriend(emailId);
+            set(state=>({friends: state.friends.filter(friend => friend.email!==emailId)}))
         } catch (err) {
             set({ error: err.message });
         } finally {
             set({ loading: false });
         }
-
     },
     
     // Fetch incoming requests
@@ -81,6 +81,42 @@ const useFriendsStore = create((set, get) => ({
             set({ loading: false });
         }
     },
+
+    acceptRequest: async (id)=>{
+        set({loading:true});
+        try {
+            const newFriend = await acceptFriendRequest(id);
+            set(state=>({friends: [...state.friends, newFriend]}));
+        } catch (err) {
+            set({error: err.message})
+        } finally {
+            set({loading:false});
+        }
+    },
+    
+    rejectRequest: async (id)=>{
+        set({loading: true});
+        try {
+            await rejectFriendRequest(id);
+            set(state=>({incomingRequests: state.incomingRequests.filter(req => req.from._id!==id)}))
+        } catch (err) {
+            set({ error: err.message });
+        } finally {
+            set({ loading: false });
+        }
+    },
+    
+    cancelRequest: async (id)=>{
+        set({loading: true});
+        try {
+            await cancelFriendRequest(id);
+            set(state=>({outgoingRequests: state.outgoingRequests.filter(req => req.to._id!==id)}))
+        } catch (err) {
+            set({ error: err.message });
+        } finally {
+            set({ loading: false });
+        }
+    }
 }));
 
 export default useFriendsStore;

@@ -4,7 +4,7 @@ const FriendRequest = require("../../models/friendRequest");
 const reject = async (req,res)=>{
     try{
         const {from} = req.params;
-        const to = req.user._id;
+        const to = req.user.id;
         const request = await FriendRequest.findOneAndDelete({
             from,
             to

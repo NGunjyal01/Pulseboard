@@ -15,16 +15,18 @@ const removeFriend = async (req, res) => {
 
         // Remove friend from user's friends list
         user.friends = user.friends.filter(f => f.toString() !== friend._id.toString());
-        
-        await user.save();
-
         // Remove user from friend's friends list
         friend.friends = friend.friends.filter(f => f.toString() !== userId.toString());
-        await friend.save();
+        await Promise.all([user.save(),friend.save()]);
 
-        res.status(200).json({ message: 'Friend removed successfully.' });
+        return res.status(200).json({ 
+            success: true,
+            message: 'Friend removed successfully.' });
     } catch (error) {
-        res.status(500).json({ message: 'Server error.', error: error.message });
+        return res.status(500).json({ 
+            success: false,
+            message: 'Server error.', 
+            error: error.message });
     }
 };
 

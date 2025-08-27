@@ -29,10 +29,6 @@ const FriendsTab = ()=>{
         setIsAddFriendDialogOpen(false);
     }
 
-    const handleRemoveFriend = (emailId) => {
-        removeFriend(emailId);
-    }
-
     useEffect(() => {
         fetchFriends()
     }, []);
@@ -83,13 +79,13 @@ const FriendsTab = ()=>{
             ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredFriends.map(friend =>{
-                    const {firstName, lastName, email, imageUrl, createdAt} = friend
+                    const {firstName, lastName, email, imageUrl, createdAt, _id:id} = friend
                     const name = `${firstName} ${lastName}`;
                     const initials = firstName[0]+lastName[0];
                     const status = 'online';
                     const mutualFriends = 1;
                     return(                
-                    <Card key={friend.id} className="hover:shadow-md transition-shadow">
+                    <Card key={id} className="hover:shadow-md transition-shadow">
                         <CardHeader className="pb-3">
                         <div className="flex items-center gap-3">
                             <div className="relative">
@@ -142,7 +138,7 @@ const FriendsTab = ()=>{
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
                                             <AlertDialogCancel className={'cursor-pointer'}>Cancel</AlertDialogCancel>
-                                            <AlertDialogAction onClick={() => handleRemoveFriend(email)} className={'cursor-pointer'}>
+                                            <AlertDialogAction onClick={() => removeFriend(email)} className={'cursor-pointer'}>
                                                 Remove
                                             </AlertDialogAction>
                                         </AlertDialogFooter>
