@@ -5,17 +5,37 @@ const TeamSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    description: {
+        type: String,
+    },
+    imageUrl:{
+        type: String
+    },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
-    members: [
-    {
+    members: [{
+        user:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required:true,
+        },
+        role:{
+            type: String,
+            enum: ['owner','admin','member'],
+            default: 'member',
+        },
+        joinedAt:{
+            type: Date,
+            default: Date.now,
+        }
+    }],
+    dashboards: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-    }
-    ],
+        ref: 'Dashboard'
+    }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('Team', TeamSchema);

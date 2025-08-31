@@ -8,9 +8,27 @@ const dashboardSchema = new mongoose.Schema({
   createdBy: { type: mongoose.Schema.Types.ObjectId, 
     ref: 'User', 
     required: true },
+  teams:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref: 'Team',
+    required: false,
+  },
   collaborators: [{
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    role: { type: String, enum: ['editor', 'viewer'], default: 'viewer' }
+    role: { type: String, enum: ['owner', 'admin', 'editor', 'viewer'], default: 'viewer' },
+    addedVia: {
+      type: String,
+      enum: ['friend','team','invite'],
+      default: 'friend',
+      required: true,
+    },
+    teamId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
+      required: function () {
+        return this.addedVia === "team";
+      }
+    },
   }],
   dataSource: {
     type: { type: String, enum: ['csv', 'api', 'simulated'], required: true,default:'csv' },

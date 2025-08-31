@@ -28,3 +28,12 @@ export const friendsEndpoints = {
     GET_INCOMING_REQUEST_API: BASE_URL + '/friendRequest/incoming',
     GET_OUTGOING_REQUEST_API: BASE_URL + '/friendRequest/outgoing',
 }
+
+export const teamsEndpoints = {
+    GET_ALL_TEAMS_API: BASE_URL + '/teams/getAll',
+    GET_TEAM_DETAILS_API: BASE_URL + '/teams/getDetails/',
+    CREATE_TEAM_API: BASE_URL + '/teams/create',
+    ADD_MEMBERS_API: BASE_URL + '/teams/addMembers',
+    REMOVE_MEMBER_API: BASE_URL + '/teams/removeMember',
+    SEND_INVITATION_API: BASE_URL + '/teams/sendInvite/',
+}

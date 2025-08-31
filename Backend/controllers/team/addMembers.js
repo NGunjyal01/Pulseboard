@@ -2,7 +2,7 @@ const Team = require("../../models/team");
 
 const addMembers = async(req,res)=>{
     try{
-        const userId = req.user._id;
+        const userId = req.user.id;
         const {teamId,members} = req.body;
         const team = await Team.findById(teamId);
         if(!team){
@@ -11,10 +11,6 @@ const addMembers = async(req,res)=>{
         const isAdmin = team.admin.toString()===userId.toString();
         if(!isAdmin){
             throw new Error("Only Admin Can Add new Members");
-        }
-        const isAllMembersAreFriends = members.some(memberId => req.user.friends.includes(memberId));
-        if(!isAllMembersAreFriends){
-            throw new Error("Some members are not your friend");
         }
         const includesAnyMember = members.some(memberId => team.members.includes(memberId));
         if(includesAnyMember){
@@ -31,6 +27,7 @@ const addMembers = async(req,res)=>{
         }
         return res.status(200).json({
             success:true,
+            team:updatedMembers,
             message:"Successfully Added Members"
         });
     }

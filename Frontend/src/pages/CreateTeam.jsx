@@ -1,149 +1,80 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import {
-  ArrowLeft,
-  Users,
-  X,
-  Search,
-  Upload,
-  Building,
-  UserPlus,
-  Crown,
-  Shield,
-  Eye,
-  User,
-  Mail,
-  Plus,
-} from "lucide-react"
+import { ArrowLeft, Users, X, Search, Upload, Building, UserPlus, Crown, Shield, Eye, User, Mail, Plus,} from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useNavigate } from "react-router"
-
-const mockFriends = [
-  {
-    id: 1,
-    name: "Sarah Chen",
-    email: "sarah@company.com",
-    avatar: "/placeholder.svg?height=40&width=40",
-    status: "online",
-    skills: ["Analytics", "Design"],
-  },
-  {
-    id: 2,
-    name: "Mike Johnson",
-    email: "mike@company.com",
-    avatar: "/placeholder.svg?height=40&width=40",
-    status: "offline",
-    skills: ["Development", "Backend"],
-  },
-  {
-    id: 3,
-    name: "Alex Rivera",
-    email: "alex@company.com",
-    avatar: "/placeholder.svg?height=40&width=40",
-    status: "online",
-    skills: ["Marketing", "Strategy"],
-  },
-  {
-    id: 4,
-    name: "Emma Wilson",
-    email: "emma@company.com",
-    avatar: "/placeholder.svg?height=40&width=40",
-    status: "online",
-    skills: ["Product", "UX"],
-  },
-  {
-    id: 5,
-    name: "David Brown",
-    email: "david@company.com",
-    avatar: "/placeholder.svg?height=40&width=40",
-    status: "offline",
-    skills: ["Sales", "Business"],
-  },
-]
+import useFriendsStore from "@/store/useFriendsStore"
+import { useTeamsStore } from "@/store/useTeamsStore"
 
 const roleOptions = [
-  { value: "admin", label: "Admin", icon: Crown, description: "Full access to team settings and data" },
-  { value: "editor", label: "Editor", icon: Shield, description: "Can edit dashboards and invite members" },
-  { value: "viewer", label: "Viewer", icon: Eye, description: "Can view dashboards and comment" },
+  // { value: "admin", label: "Admin", icon: Crown, description: "Full access to team settings and data" },
+  { value: "admin", label: "Admin", icon: Shield },
+  { value: "member", label: "Member", icon: User },
 ]
 
 const CreateTeam = () => {
+
+  const { friends, fetchFriends } = useFriendsStore();
+  const { createTeam } = useTeamsStore();
+
   const [teamData, setTeamData] = useState({
     name: "",
     description: "",
     avatar: "",
-    isPrivate: false,
   })
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedMembers, setSelectedMembers] = useState([])
-  const [selectAll, setSelectAll] = useState(false)
   const [emailInvite, setEmailInvite] = useState("")
   const navigate = useNavigate();
-
-  const filteredFriends = mockFriends.filter(
-    (friend) =>
-      friend.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      friend.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      friend.skills.some((skill) => skill.toLowerCase().includes(searchQuery.toLowerCase())))
   
   const handleMemberToggle = (friend) => {
-    const isSelected = selectedMembers.find((m) => m.id === friend.id)
+    const isSelected = selectedMembers.find((m) => m._id === friend._id)
     if (isSelected) {
-      setSelectedMembers((prev) => prev.filter((m) => m.id !== friend.id))
+      setSelectedMembers((prev) => prev.filter((m) => m.id !== id))
     } else {
       setSelectedMembers((prev) => [
         ...prev,
         {
           ...friend,
-          role: "viewer",
+          role: "member",
         },
       ])
     }
   }
 
-  const handleSelectAll = () => {
-    if (selectAll) {
-      setSelectedMembers([])
-    } else {
-      setSelectedMembers(
-        filteredFriends.map((friend) => ({
-          ...friend,
-          role: "viewer",
-        }))
-      )
-    }
-    setSelectAll(!selectAll)
-  }
-
   const updateMemberRole = (memberId, role) => {
-    setSelectedMembers((prev) => prev.map((member) => (member.id === memberId ? { ...member, role } : member)))
+    setSelectedMembers((prev) => prev.map((member) => (member._id === memberId ? { ...member, role } : member)))
   }
 
   const removeMember = (memberId) => {
-    setSelectedMembers((prev) => prev.filter((member) => member.id !== memberId))
+    setSelectedMembers((prev) => prev.filter((member) => member._id !== memberId))
   }
 
   const handleCreateTeam = () => {
-    console.log("Creating team:", {
+    createTeam({
       ...teamData,
       members: selectedMembers,
-    })
-    // In a real app, you would navigate to the dashboards page
-    console.log("Navigating to dashboards")
+    },navigate);
   }
 
   const getRoleIcon = (role) => {
     const roleOption = roleOptions.find((r) => r.value === role)
-    return roleOption ? roleOption.icon : Eye
+    return roleOption ? roleOption.icon : User
   }
+
+  const handleEmailInvite = ()=>{
+
+  }
+
+  useEffect(()=>{
+    fetchFriends();
+  },[])
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -151,7 +82,7 @@ const CreateTeam = () => {
         <div className="flex h-16 items-center px-6">
           <Button size="sm" className={'absolute cursor-pointer lg:py-5'} onClick={() => navigate('/teams')}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Friends
+            Back to Teams
           </Button>
           <div className="flex-1 text-center">
             <h1 className="text-lg font-semibold">Create New Team</h1>
@@ -173,7 +104,7 @@ const CreateTeam = () => {
             <div className="flex items-center gap-6">
               <div className="relative">
                 <Avatar className="h-20 w-20">
-                  <AvatarImage src={teamData.avatar || "/placeholder.svg"} alt="Team Avatar" />
+                  <AvatarImage src={teamData.avatar} alt="Team Avatar" />
                   <AvatarFallback>
                     <Building className="h-8 w-8" />
                   </AvatarFallback>
@@ -203,17 +134,6 @@ const CreateTeam = () => {
                 </div>
               </div>
             </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="private-team"
-                checked={teamData.isPrivate}
-                onCheckedChange={(checked) => setTeamData((prev) => ({ ...prev, isPrivate: !!checked }))}
-              />
-              <Label htmlFor="private-team" className="text-sm">
-                Make this team private (invite-only)
-              </Label>
-            </div>
           </CardContent>
         </Card>
 
@@ -235,61 +155,52 @@ const CreateTeam = () => {
                   className="pl-10 my-2"
                 />
               </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox id="select-all" checked={selectAll} onCheckedChange={handleSelectAll} />
-                <Label htmlFor="select-all" className="text-sm">
-                  Select All
-                </Label>
-              </div>
             </div>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="friends" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="friends">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="friends" className={'cursor-pointer'}>
                   <User className="h-4 w-4 mr-2" />
                   Friends
                 </TabsTrigger>
-                <TabsTrigger value="teams">
-                  <Building className="h-4 w-4 mr-2" />
-                  Teams
-                </TabsTrigger>
-                <TabsTrigger value="email">
+                <TabsTrigger value="email" className={'cursor-pointer'}>
                   <Mail className="h-4 w-4 mr-2" />
                   Email
                 </TabsTrigger>
               </TabsList>
 
               <TabsContent value="friends" className="space-y-2">
-                {mockFriends
-                  .filter((friend) => !selectedMembers.find((c) => c.id === friend.id))
-                  .map((friend) => (
-                    <div key={friend.id} className="flex items-center justify-between p-2 hover:bg-muted rounded">
+                {friends.length === 0 ?
+                <div className="text-center mt-1">
+                  <h1 className="text-sm">No Friends Found</h1>
+                </div> : friends.filter((friend) => !selectedMembers.find((c) => c._id === friend._id))
+                  .map((friend) => {
+
+                    const {firstName, lastName, email, imageUrl, createdAt, _id:id} = friend
+                    const name = `${firstName} ${lastName}`;
+                    const initials = firstName[0]+lastName[0];
+
+                    return(
+                    <div key={id} className="flex items-center justify-between p-2 hover:bg-muted rounded">
                       <div className="flex items-center gap-3">
                         <Avatar className="h-6 w-6">
-                          <AvatarImage src={friend.avatar || "/placeholder.svg"} />
+                          <AvatarImage src={imageUrl} />
                           <AvatarFallback className="text-xs">
-                            {friend.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")}
+                            {initials}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="text-sm font-medium">{friend.name}</p>
-                          <p className="text-xs text-muted-foreground">{friend.email}</p>
+                          <p className="text-sm font-medium">{name}</p>
+                          <p className="text-xs text-muted-foreground">{email}</p>
                         </div>
                       </div>
-                      <Button size="sm" variant="outline" onClick={() => handleMemberToggle(friend)}>
+                      <Button size="sm" variant="outline" onClick={() => handleMemberToggle(friend)} className={'cursor-pointer'}>
                         <Plus className="h-3 w-3 mr-1" />
                         Add
                       </Button>
                     </div>
-                  ))}
-              </TabsContent>
-
-              <TabsContent value="teams" className="space-y-2">
-                <div>Teams are not yet implemented</div>
+                  )})}
               </TabsContent>
 
               <TabsContent value="email" className="space-y-4">
@@ -306,20 +217,7 @@ const CreateTeam = () => {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => {
-                    if (emailInvite.trim()) {
-                      const newCollaborator = {
-                        id: Date.now(),
-                        name: emailInvite.split("@")[0],
-                        email: emailInvite,
-                        avatar: "/placeholder.svg?height=40&width=40",
-                        role: "viewer",
-                        skills: [],
-                      }
-                      setSelectedMembers((prev) => [...prev, newCollaborator])
-                      setEmailInvite("")
-                    }
-                  }}
+                  onClick={handleEmailInvite}
                   disabled={!emailInvite.trim()}
                   className="w-full"
                 >
@@ -345,57 +243,48 @@ const CreateTeam = () => {
               <div className="space-y-4">
                 {selectedMembers.map((member) => {
                   const RoleIcon = getRoleIcon(member.role)
+                  console.log(member)
+                  const {firstName, lastName, email, imageUrl, createdAt, _id:id, role} = member
+                  const name = `${firstName} ${lastName}`;
+                  const initials = firstName[0]+lastName[0];
                   return (
-                    <div key={member.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div key={id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex items-center gap-3">
                         <Avatar className="h-10 w-10">
-                          <AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name} />
+                          <AvatarImage src={imageUrl} alt={name} />
                           <AvatarFallback>
-                            {member.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")}
+                            {initials}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <h4 className="font-medium">{member.name}</h4>
-                          <p className="text-sm text-muted-foreground">{member.email}</p>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {member.skills.map((skill) => (
-                              <Badge key={skill} variant="outline" className="text-xs">
-                                {skill}
-                              </Badge>
-                            ))}
-                          </div>
+                          <h4 className="font-medium">{name}</h4>
+                          <p className="text-sm text-muted-foreground">{email}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Select value={member.role} onValueChange={(role) => updateMemberRole(member.id, role)}>
-                          <SelectTrigger className="w-32">
+                        <Select value={role} onValueChange={(role) => updateMemberRole(id, role)}>
+                          <SelectTrigger className="w-32 cursor-pointer">
                             <SelectValue>
                               <div className="flex items-center gap-2">
                                 <RoleIcon className="h-4 w-4" />
                                 <span className="text-sm">
-                                  {roleOptions.find((r) => r.value === member.role)?.label}
+                                  {roleOptions.find((r) => r.value === role)?.label}
                                 </span>
                               </div>
                             </SelectValue>
                           </SelectTrigger>
                           <SelectContent>
                             {roleOptions.map((role) => (
-                              <SelectItem key={role.value} value={role.value}>
+                              <SelectItem key={role.value} value={role.value} className={'cursor-pointer'}>
                                 <div className="flex items-center gap-2">
                                   <role.icon className="h-4 w-4" />
-                                  <div>
-                                    <div className="font-medium">{role.label}</div>
-                                    <div className="text-xs text-muted-foreground">{role.description}</div>
-                                  </div>
+                                  <div className="font-medium">{role.label}</div>
                                 </div>
                               </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
-                        <Button variant="ghost" size="sm" onClick={() => removeMember(member.id)}>
+                        <Button variant="ghost" size="sm" onClick={() => removeMember(id)} className={'cursor-pointer'}>
                           <X className="h-4 w-4" />
                         </Button>
                       </div>
@@ -415,16 +304,16 @@ const CreateTeam = () => {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
               <div className="p-4 bg-muted rounded-lg">
-                <div className="text-2xl font-bold">{selectedMembers.length}</div>
+                <div className="text-2xl font-bold">{selectedMembers.length+1}</div>
                 <div className="text-sm text-muted-foreground">Total Members</div>
               </div>
               <div className="p-4 bg-muted rounded-lg">
-                <div className="text-2xl font-bold">{selectedMembers.filter((m) => m.role === "admin").length}</div>
-                <div className="text-sm text-muted-foreground">Admins</div>
+                <div className="text-2xl font-bold">1</div>
+                <div className="text-sm text-muted-foreground">Owner</div>
               </div>
               <div className="p-4 bg-muted rounded-lg">
-                <div className="text-2xl font-bold">{selectedMembers.filter((m) => m.role === "editor").length}</div>
-                <div className="text-sm text-muted-foreground">Editors</div>
+                <div className="text-2xl font-bold">{selectedMembers.filter((m) => m.role === "admin").length}</div>
+                <div className="text-sm text-muted-foreground">Admin</div>
               </div>
             </div>
           </CardContent>

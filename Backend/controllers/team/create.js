@@ -2,11 +2,11 @@ const Team = require("../../models/team");
 
 const create = async (req,res)=>{
     try{
-        const {name} = req.body;
-        const admin = req.user._id;
-        const members = [admin];
+        const {name,members} = req.body;
         const description = req.body.description || null;
-        const team = new Team({name,admin,members,description});
+        const imageUrl = req.body.imageUrl || null;
+        const createdBy = req.user.id;
+        const team = new Team({name,members,description,imageUrl,createdBy});
         await team.save();
         return res.status(200).json({
             success:true,

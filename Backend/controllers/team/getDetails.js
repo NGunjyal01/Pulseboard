@@ -2,10 +2,9 @@ const Team = require("../../models/team");
 
 const getDetails = async(req,res)=>{
     try{
-        const {teamId} = req.body;
+        const {teamId} = req.params;
         const team = await Team.findById(teamId)
-        .populate("members","firstName lastName userName photoUrl")
-        .populate("transactions");
+        .populate("members","firstName lastName userName photoUrl");
         if(!team){
             throw new Error("Team Does not Exists");
         }
