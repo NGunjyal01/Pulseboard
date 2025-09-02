@@ -18,7 +18,7 @@ const login = async (req, res) => {
                 success: false,
                 error: 'Invalid credentials' });
 
-        const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
+        const token = jwt.sign({ id: user._id, email:user.email }, JWT_SECRET, { expiresIn: '7d' });
         return res.cookie("token", token, {
             httpOnly: true,
             secure: false,         // false for localhost

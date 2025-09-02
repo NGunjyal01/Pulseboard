@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +10,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { ArrowLeft, Users, Plus, Search, MoreVertical, Crown, Shield, Eye, Trash2, Building, Calendar, Activity, Lock, Globe } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useTeamsStore } from "@/store/useTeamsStore";
+
 const roleOptions = [
   { value: "admin", label: "Admin", icon: Crown, color: "text-yellow-600" },
   { value: "editor", label: "Editor", icon: Shield, color: "text-blue-600" },
@@ -17,44 +18,22 @@ const roleOptions = [
 ]
 const InvitationsTab = () => {
 
-    const {invitations} = useTeamsStore();
-    console.log(invitations.length)
+    const { invitations, fetchInvitations, acceptInvite, rejectInvite } = useTeamsStore();
 
-  const handleAcceptTeamInvite = (inviteId) => {
-    const invitation = invitations.find((inv) => inv.id === inviteId)
-    if (invitation) {
-      // Add to teams list (simplified - in real app would call API)
-      const newTeam = {
-        id: invitation.id,
-        name: invitation.teamName,
-        description: invitation.teamDescription,
-        avatar: invitation.teamAvatar,
-        isPrivate: false,
-        createdDate: new Date().toISOString().split("T")[0],
-        role: invitation.role,
-        members: [], // Would be populated from API
-        dashboards: 0,
-        activity: "Just joined",
-      }
-      setTeams((prev) => [...prev, newTeam])
-      // Remove from invitations
-      
+    const getRoleIcon = (role) => {
+        const roleOption = roleOptions.find((r) => r.value === role)
+        return roleOption ? roleOption.icon : Eye
     }
-  }
 
-  const handleRejectTeamInvite = (inviteId) => {
-    
-  }
+    const getRoleColor = (role) => {
+        const roleOption = roleOptions.find((r) => r.value === role)
+        return roleOption ? roleOption.color : "text-gray-600"
+    }
 
-  const getRoleIcon = (role) => {
-    const roleOption = roleOptions.find((r) => r.value === role)
-    return roleOption ? roleOption.icon : Eye
-  }
+    useEffect(()=>{
+        fetchInvitations();
+    },[])
 
-  const getRoleColor = (role) => {
-    const roleOption = roleOptions.find((r) => r.value === role)
-    return roleOption ? roleOption.color : "text-gray-600"
-  }
     return (
     <Card>
     <CardHeader>
@@ -73,24 +52,29 @@ const InvitationsTab = () => {
         ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {invitations.map((invitation) => {
-            const RoleIcon = getRoleIcon(invitation.role)
+            const {role,invitedBy,createdAt:inviteDate,team,_id:id} = invitation;
+            const RoleIcon = getRoleIcon(role);
+            const {firstName,lastName,email,imageUrl:inviterAvatar} = invitedBy;
+            const InviterName = firstName+lastName;
+            const initials = firstName[0]+lastName[0];
+            const {name:teamName,description:teamDescription,imageUrl:teamAvatar,members} = team;
             return (
-                <Card key={invitation.id} className="hover:shadow-md transition-shadow">
+                <Card key={id} className="hover:shadow-md transition-shadow">
                 <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
                     <Avatar className="h-12 w-12">
                         <AvatarImage
-                        src={invitation.teamAvatar || "/placeholder.svg"}
-                        alt={invitation.teamName}
+                        src={teamAvatar}
+                        alt={teamName}
                         />
                         <AvatarFallback>
                         <Building className="h-6 w-6" />
                         </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold truncate">{invitation.teamName}</h3>
+                        <h3 className="font-semibold truncate">{teamName}</h3>
                         <p className="text-sm text-muted-foreground line-clamp-2">
-                        {invitation.teamDescription}
+                        {teamDescription}
                         </p>
                     </div>
                     </div>
@@ -99,47 +83,34 @@ const InvitationsTab = () => {
                     <div className="space-y-3">
                     <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-2">
-                        <RoleIcon className={`h-4 w-4 ${getRoleColor(invitation.role)}`} />
-                        <span className="capitalize">Role: {invitation.role}</span>
+                        <RoleIcon className={`h-4 w-4 ${getRoleColor(role)}`} />
+                        <span className="capitalize">Role: {role}</span>
                         </div>
-                        <Badge variant="secondary">{invitation.memberCount} members</Badge>
+                        <Badge variant="secondary">{members.length} members</Badge>
                     </div>
 
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Avatar className="h-5 w-5">
-                        <AvatarImage
-                            src={invitation.inviterAvatar || "/placeholder.svg"}
-                            alt={invitation.invitedBy}
-                        />
-                        <AvatarFallback className="text-xs">
-                            {invitation.invitedBy
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
-                        </AvatarFallback>
+                            <AvatarImage src={inviterAvatar} alt={InviterName}/>
+                            <AvatarFallback className="text-xs">
+                                {initials}
+                            </AvatarFallback>
                         </Avatar>
-                        <span>Invited by {invitation.invitedBy}</span>
+                        <span>Invited by {InviterName}</span>
                     </div>
 
                     <div className="text-sm text-muted-foreground">
-                        Invited {new Date(invitation.inviteDate).toLocaleDateString()}
+                        Invited {new Date(inviteDate).toLocaleDateString()}
                     </div>
 
                     <div className="flex gap-2">
-                        <Button
-                        size="sm"
-                        className="flex-1"
-                        onClick={() => handleAcceptTeamInvite(invitation.id)}
-                        >
-                        Accept
+                        <Button size="sm" className="flex-1 cursor-pointer"
+                        onClick={() => acceptInvite(id)}>
+                            Accept
                         </Button>
-                        <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1 bg-transparent"
-                        onClick={() => handleRejectTeamInvite(invitation.id)}
-                        >
-                        Reject
+                        <Button variant="outline" size="sm" className="flex-1 bg-transparent cursor-pointer"
+                        onClick={() => rejectInvite(id)}>
+                            Reject
                         </Button>
                     </div>
                     </div>
@@ -152,6 +123,6 @@ const InvitationsTab = () => {
     </CardContent>
     </Card>
     )
-}
+    }
 
 export default InvitationsTab

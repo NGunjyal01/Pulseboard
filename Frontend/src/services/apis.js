@@ -36,4 +36,8 @@ export const teamsEndpoints = {
     ADD_MEMBERS_API: BASE_URL + '/teams/addMembers',
     REMOVE_MEMBER_API: BASE_URL + '/teams/removeMember',
     SEND_INVITATION_API: BASE_URL + '/teams/sendInvite/',
+    ACCEPT_INVITATION_API: BASE_URL + '/teams/acceptInvite/',
+    REJECT_INVITATION_API: BASE_URL + '/teams/rejectInvite/',
+    CANCEL_INVITATION_API: BASE_URL + '/teams/cancelInvite',
+    GET_ALL_INVITATIONS_API: BASE_URL + '/teams/getAllInvitations',
 }

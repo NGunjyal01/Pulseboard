@@ -34,14 +34,14 @@ const MyTeamsTab = () => {
     const navigate = useNavigate(); 
 
     const filteredTeams = teams.filter((team) => {
-    const matchesSearch =
-        team.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (team.description && team.description.toLowerCase().includes(searchQuery.toLowerCase()))
-    const member = team.members.find(m => m.user === user._id);
-    const role = member ? member.role : 'member';
+        const matchesSearch =
+            team.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (team.description && team.description.toLowerCase().includes(searchQuery.toLowerCase()))
+        const member = team.members.find(m => m.user === user._id);
+        const role = member ? member.role : 'member';
 
-    const matchesRole = filterRole === "all" || role === filterRole
-    return matchesSearch && matchesRole
+        const matchesRole = filterRole === "all" || role === filterRole
+        return matchesSearch && matchesRole
     })
 
     const handleDeleteTeam = (teamId) => {
@@ -49,12 +49,12 @@ const MyTeamsTab = () => {
     }
 
     const handleTeamClick = (teamId) => {
-        navigate(`/teams/${teamId}`)
+        navigate(`/team/${teamId}`)
     }
 
     const handleViewDetails = (e, teamId) => {
         e.stopPropagation()
-        navigate(`/teams/${teamId}`)
+        navigate(`/team/${teamId}`)
     }
 
     const getRoleIcon = (role) => {
@@ -223,7 +223,7 @@ const MyTeamsTab = () => {
                     <div className="flex items-center gap-2">
                         <div className="flex -space-x-2">
                         {members.slice(0, 4).map((member) => (
-                            <Avatar key={member.id} className="h-6 w-6 border-2 border-background">
+                            <Avatar key={member._id} className="h-6 w-6 border-2 border-background">
                             <AvatarImage src={member.imageUrl} alt={member.name} />
                             <AvatarFallback className="text-xs">
                                 {}

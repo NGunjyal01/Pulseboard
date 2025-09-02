@@ -8,26 +8,38 @@ const addMembers = async(req,res)=>{
         if(!team){
             throw new Error("team Does not Exists");
         }
-        const isAdmin = team.admin.toString()===userId.toString();
-        if(!isAdmin){
-            throw new Error("Only Admin Can Add new Members");
+        const canAddMembers = !(team.members.find(m=>m.user.toString()===userId.toString())).role!=='member';
+        if(!canAddMembers){
+            throw new Error("Only Admin/Owners Can Add new Members");
         }
-        const includesAnyMember = members.some(memberId => team.members.includes(memberId));
-        if(includesAnyMember){
+        const includesAnyMember = members.some(memberId =>
+            team.members.some(m => m.user.toString() === memberId.toString())
+        );
+
+        if (includesAnyMember) {
             throw new Error("Some members already present");
         }
-        const updatedMembers = [...team.members,...members];
-        const updatedteam = await Team.updateOne({_id:teamId},{
-            $set:{
-                members:updatedMembers
-            }
+
+        const newMembers = members.map(userId => ({
+            user: userId,
+            role: "member",
+            joinedAt: new Date()
+        }));
+        const updatedMembers = [...team.members, ...newMembers];
+        const updatedTeam = await Team.findByIdAndUpdate(
+            teamId,
+            { $set: { members: updatedMembers } },
+            { new: true }
+            ).populate({
+            path: 'members.user',
+            select: 'firstName lastName imageUrl email createdAt'
         });
-        if(!updatedteam){
+        if(!updatedTeam){
             throw new Error("Error While Adding New Members");
         }
         return res.status(200).json({
             success:true,
-            team:updatedMembers,
+            team:updatedTeam,
             message:"Successfully Added Members"
         });
     }

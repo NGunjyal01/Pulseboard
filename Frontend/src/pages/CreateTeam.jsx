@@ -21,7 +21,7 @@ const roleOptions = [
 const CreateTeam = () => {
 
   const { friends, fetchFriends } = useFriendsStore();
-  const { createTeam } = useTeamsStore();
+  const { createTeam, sendInvite } = useTeamsStore();
 
   const [teamData, setTeamData] = useState({
     name: "",
@@ -159,15 +159,15 @@ const CreateTeam = () => {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="friends" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-1">
                 <TabsTrigger value="friends" className={'cursor-pointer'}>
                   <User className="h-4 w-4 mr-2" />
                   Friends
                 </TabsTrigger>
-                <TabsTrigger value="email" className={'cursor-pointer'}>
+                {/* <TabsTrigger value="email" className={'cursor-pointer'}>
                   <Mail className="h-4 w-4 mr-2" />
                   Email
-                </TabsTrigger>
+                </TabsTrigger> */}
               </TabsList>
 
               <TabsContent value="friends" className="space-y-2">
@@ -321,7 +321,7 @@ const CreateTeam = () => {
 
         {/* Actions */}
         <div className="flex justify-between">
-          <Button variant="outline" onClick={() => console.log("Cancel team creation")}>
+          <Button variant="outline" onClick={()=>navigate('/teams')} className={'cursor-pointer'}>
             Cancel
           </Button>
           <Button onClick={handleCreateTeam} disabled={!teamData.name.trim() || selectedMembers.length === 0}>

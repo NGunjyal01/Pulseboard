@@ -13,7 +13,7 @@ const useFriendsStore = create((set, get) => ({
     fetchFriends: async () => {
         if (get().fetched.friends) return;
 
-        set({ loading: true, error: null });
+        set({ loading: true });
         try {
             const data = await getAllFriends();
             set((state)=>({ friends: data,

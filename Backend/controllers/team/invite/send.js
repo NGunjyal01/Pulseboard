@@ -1,7 +1,6 @@
-// controllers/team/sendInvite.js
-const Team = require("../../models/team");
-const teamInvite = require("../../models/teamInvite");
-const User = require("../../models/user");
+const Team = require("../../../models/team");
+const TeamInvite = require("../../../models/teamInvite");
+const User = require("../../../models/user");
 
 const sendInvite = async (req, res) => {
   try {
@@ -15,6 +14,14 @@ const sendInvite = async (req, res) => {
       return res.status(404).json({ success: false, message: "Team not found" });
     }
 
+    const invite = await TeamInvite.findOne({team:teamId,email});
+    if(invite){
+      return res.status(409).json({
+        success: false,
+        message: "Invitation already sent"
+      });
+    }
+
     const inviter = team.members.find(
       (m) => m.user.toString() === inviterId.toString()
     );
@@ -26,20 +33,25 @@ const sendInvite = async (req, res) => {
     }
 
     const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      const alreadyMember = team.members.find(
-        (m) => m.user.toString() === existingUser._id.toString()
-      );
-      if (alreadyMember) {
-        return res.status(400).json({
-          success: false,
-          message: "User is already a team member",
-        });
-      }
+    if (!existingUser) {
+      return res.status(404).json({
+        success: false,
+        error: "USER_NOT_FOUND",
+        message: "No account found with these credentials"
+      });
+    }
+    const alreadyMember = team.members.find(
+      (m) => m.user.toString() === existingUser._id.toString()
+    );
+    if (alreadyMember) {
+      return res.status(400).json({
+        success: false,
+        message: "User is already a team member",
+      });
     }
 
     // create invitation
-    const invitation = await teamInvite.create({
+    const invitation = await TeamInvite.create({
       team: teamId,
       email,
       invitedBy: inviterId,

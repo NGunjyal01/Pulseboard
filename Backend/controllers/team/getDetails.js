@@ -3,8 +3,10 @@ const Team = require("../../models/team");
 const getDetails = async(req,res)=>{
     try{
         const {teamId} = req.params;
-        const team = await Team.findById(teamId)
-        .populate("members","firstName lastName userName photoUrl");
+        const team = await Team.findById(teamId).populate({
+            path:'members.user',
+            select:'firstName lastName imageUrl email createdAt'
+        }).exec();
         if(!team){
             throw new Error("Team Does not Exists");
         }

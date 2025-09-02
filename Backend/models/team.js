@@ -32,6 +32,23 @@ const TeamSchema = new mongoose.Schema({
             default: Date.now,
         }
     }],
+    invitedMembers: [{
+        user:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required:true,
+        },
+        role:{
+            type: String,
+            enum: ['owner','admin','member'],
+            default: 'member',
+        },
+        sendAt:{
+            type: Date,
+            default: Date.now,
+        }
+    }
+    ],
     dashboards: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Dashboard'
