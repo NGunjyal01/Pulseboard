@@ -9,11 +9,12 @@ import useDashboardStore from '@/store/useDashboardStore';
 import { publishDashboard } from '@/services/dashboardAPI';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router';
+import CancelButton from './CancelButton';
 
-const Step3ConfigureCharts = ({ onBack, onCancel }) => {
+const Step3ConfigureCharts = () => {
   const [isLoading,setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const {dashboardId,dashboardData,setDashboardData,resetDashboardData} = useDashboardStore();
+  const {dashboardId,dashboardData,setDashboardData,resetDashboardData,handleBack:onBack} = useDashboardStore();
   const addChart = () => {
     const newChart = {
       id: `chart-${Date.now()}`,
@@ -109,9 +110,7 @@ const Step3ConfigureCharts = ({ onBack, onCancel }) => {
         </div>
 
         <div className="flex justify-between">
-          <Button variant="outline" onClick={onCancel}>
-            Cancel
-          </Button>
+          <CancelButton/>
           <div className="flex gap-2">
             <Button variant="outline" onClick={onBack}>
               Back

@@ -4,15 +4,15 @@ const dashboardSchema = new mongoose.Schema({
   title: { type: String, 
     required: true, 
     default: 'Untitled Dashboard' },
-  description: String,
+  description: { type: String, 
+  },
   createdBy: { type: mongoose.Schema.Types.ObjectId, 
     ref: 'User', 
     required: true },
-  teams:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref: 'Team',
-    required: false,
-  },
+  teams: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Team'
+  }],
   collaborators: [{
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     role: { type: String, enum: ['owner', 'admin', 'editor', 'viewer'], default: 'viewer' },

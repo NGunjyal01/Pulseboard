@@ -5,21 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Building, Users, X } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
+import useDashboardStore from '@/store/useDashboardStore';
 
-const CollaboratorItem = ({ collaborator, onRoleChange, onRemove }) => {
+const CollaboratorItem = ({ collaborator }) => {
+
+  const { removeCollaborator,updateCollaboratorRole } = useDashboardStore();
+
   return (
     <div className="flex items-center justify-between p-3 border rounded-lg">
       <div className="flex items-center gap-3">
         <Avatar className="h-8 w-8">
-          <AvatarImage src={collaborator.avatar || "/placeholder.svg"} />
+          <AvatarImage src={collaborator.imageUrl} />
           <AvatarFallback>
             {collaborator.type === "team" ? (
               <Building className="h-4 w-4" />
             ) : (
-              collaborator.name
-                .split(" ")
-                .map(n => n[0])
-                .join("")
+              collaborator.firstName
             )}
           </AvatarFallback>
         </Avatar>
@@ -41,7 +42,7 @@ const CollaboratorItem = ({ collaborator, onRoleChange, onRemove }) => {
       <div className="flex items-center gap-2">
         <Select
           value={collaborator.role}
-          onValueChange={role => onRoleChange(collaborator.id, role)}
+          onValueChange={role => updateCollaboratorRole(collaborator, role)}
         >
           <SelectTrigger className="w-24 cursor-pointer" >
             <SelectValue />
@@ -52,7 +53,7 @@ const CollaboratorItem = ({ collaborator, onRoleChange, onRemove }) => {
             <SelectItem value="admin" className={"cursor-pointer"}>Admin</SelectItem>
           </SelectContent>
         </Select>
-        <Button variant="ghost" size="sm" onClick={() => onRemove(collaborator.id)} className={"cursor-pointer"}>
+        <Button variant="ghost" size="sm" onClick={() => removeCollaborator(collaborator)} className={"cursor-pointer"}>
           <X className="h-4 w-4" />
         </Button>
       </div>

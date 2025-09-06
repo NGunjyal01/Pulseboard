@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -7,98 +6,18 @@ import { sampleDatasets } from './constants';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import useDashboardStore from "@/store/useDashboardStore";
-import { useState } from "react";
-import { toast } from "sonner";
-import { updateStep2DataSource } from "@/services/dashboardAPI";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import CancelButton from "./CancelButton";
 
-const Step2DataSource = ({ onBack, onCancel }) => {
-  const {dashboardData,setDashboardData,dashboardId,step,setStep} = useDashboardStore();
-  const [isLoading,setIsLoading] = useState(false);
-
-  const handleDataSourceChange = (source) => {
-    if(dashboardData.dataSource!==source){
-      setDashboardData({
-        dataSource: source,
-        parsedData: null,
-        dataFields: [],
-        csvFileName: "",
-        apiUrl: "",
-        apiMethod: '',
-        apiParams: {},
-        apiBody: {},
-        apiDataPath: '',
-        selectedDataset: "",
-        parsedData: null,
-        dataFields: [],
-      });
-    }
-  };
-  const handleNext = async() => step < 3 && setStep(step + 1);
-
-  const handleFileUpload = async(event) => {
-    const file = event.target.files?.[0];
-    if (file && file.type === "text/csv") {
-      setIsLoading(true);
-      try {
-        const updatedFields = {dataSource:'csv',csvFile:file};
-        const result = await updateStep2DataSource(dashboardId,updatedFields);
-        setDashboardData({csvFileName: file.name, dataFields: result.headers, parsedData: result.sampleData});
-      } catch (error) {
-        toast.error("Error While Uploading CSV File");
-      }finally{
-        setIsLoading(false);
-      }
-    }
-    else{
-      toast.error("Invalid File Type")
-    }
-  };
+const Step2DataSource = () => {
+  const {dashboardData,setDashboardData,step,setStep,loading,handleDataSourceChange,
+    handleApiPreview,handleFileUpload,handleSimulatedData,handleBack:onBack
+  } = useDashboardStore();
+  const handleNext = () => step < 3 && setStep(step + 1);
 
   const handleRemoveCsvFile = ()=>{
     setDashboardData({csvFileName:'', dataFields:[] , parsedData:null})
   }
-
-  const handleApiPreview = async() => {
-    if (dashboardData.apiUrl) {
-      setIsLoading(true);
-      try {
-        const {apiMethod,apiUrl,apiParams,apiBody,apiDataPath} = dashboardData;
-        let updatedFields = {dataSource:'api',method:apiMethod,endpoint:apiUrl};
-        if(apiParams) updatedFields.params = apiParams;  
-        if(apiBody) updatedFields.body = apiBody;
-        if(apiDataPath) updatedFields.dataPath = apiDataPath;
-        const result = await updateStep2DataSource(dashboardId,updatedFields);
-        console.log(result);
-        setDashboardData({dataFields: result.headers, parsedData: result.sampleData});
-      } catch (error) {
-        toast.error("Error While Fetching Preview");
-      }finally{
-        setIsLoading(false);
-      }
-    }
-  };
-
-  const handleSimulatedData = async(datasetKey) => {
-    const dataset = sampleDatasets[datasetKey];
-    if (dataset && dashboardData.selectedDataset !== datasetKey) {
-      setIsLoading(true);
-      try {
-        const {name,fields,preview} = dataset;
-        setDashboardData({
-          selectedDataset: datasetKey,
-          dataFields: fields,
-          parsedData: preview,
-        });
-        const updatedFields = {dataSource:'simulated',type:name,sampleData:preview}
-        await updateStep2DataSource(dashboardId,updatedFields);
-      } catch (error) {
-        
-      }finally{
-        setIsLoading(false);
-      }
-    }
-  };
 
   return (
     <Card>
@@ -305,16 +224,14 @@ const Step2DataSource = ({ onBack, onCancel }) => {
         )}
 
         <div className="flex justify-between">
-          <Button variant="outline" onClick={onCancel} className={"cursor-pointer"}>
-            Cancel
-          </Button>
+          <CancelButton/>
           <div className="flex gap-2">
             <Button variant="outline" onClick={onBack} className={"cursor-pointer"}>
               Back
             </Button>
-            <Button onClick={handleNext} disabled={!dashboardData.parsedData || isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isLoading ? "Processing..." : "Next"}
+            <Button onClick={handleNext} disabled={!dashboardData.parsedData || loading} className={'cursor-pointer'}>
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {loading ? "Processing..." : "Next"}
             </Button>
           </div>
         </div>

@@ -1,61 +1,29 @@
-import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Plus, User, Building, Loader2 } from 'lucide-react';
 import CollaboratorItem from './CollaboratorItem';
-import { mockFriends, mockTeams } from './constants';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import useDashboardStore from '@/store/useDashboardStore';
-import { updateStep1BasicInfo } from '@/services/dashboardAPI';
-import { toast } from 'sonner';
+import useFriendsStore from '@/store/useFriendsStore';
+import { useTeamsStore } from '@/store/useTeamsStore';
+import CancelButton from './CancelButton';
 
-const Step1BasicInfo = ({ onCancel }) => {
-  const {dashboardData,dashboardId,setDashboardData,step,setStep} = useDashboardStore();
-  const [isLoading,setIsLoading] = useState(false);
-  const addCollaborator = (item) => {
-    if (!dashboardData.collaborators.find(c => c.id === item.id)) {
-      setDashboardData({
-        collaborators: [...dashboardData.collaborators, { ...item, role: "viewer" }],
-      });
-    }
-  };
+const Step1BasicInfo = () => {
 
-  const removeCollaborator = (id) => {
-    setDashboardData({
-      collaborators: dashboardData.collaborators.filter(c => c.id !== id),
-    });
-  };
+  const { friends,fetchFriends } = useFriendsStore();
+  const { teams,fetchTeams } = useTeamsStore();
 
-  const updateCollaboratorRole = (id, role) => {
-    setDashboardData({
-      collaborators: dashboardData.collaborators.map(c =>
-        c.id === id ? { ...c, role } : c
-      ),
-    });
-  };
+  const { dashboardData,setDashboardData,addCollaborator,completeStep1:handleNext,loading } = useDashboardStore();
 
-  const handleNext = async() => {
-    setIsLoading(true);
-    try{
-      const updatedFields = {};
-      const {title,description,collaborators} = dashboardData;
-      if (title) updatedFields.title = title;
-      if (description) updatedFields.description = description;
-      if (collaborators) updatedFields.collaborators = collaborators;
-      console.log(dashboardId,updatedFields)
-      const result = await updateStep1BasicInfo(dashboardId,updatedFields);
-      console.log(result);
-      step < 3 && setStep(step + 1);
-    }catch(error){
-      // toast.error("Error while step1");
-    }finally{
-      setIsLoading(false);
-    }
-  }
+  useEffect(()=>{
+    fetchFriends();
+    fetchTeams();
+  },[]);
 
   return (
     <Card>
@@ -92,10 +60,8 @@ const Step1BasicInfo = ({ onCancel }) => {
             <div className="space-y-2">
               {dashboardData.collaborators.map(collaborator => (
                 <CollaboratorItem
-                  key={collaborator.id}
+                  key={collaborator.userId || collaborator.teamId}
                   collaborator={collaborator}
-                  onRoleChange={updateCollaboratorRole}
-                  onRemove={removeCollaborator}
                 />
               ))}
             </div>
@@ -116,51 +82,53 @@ const Step1BasicInfo = ({ onCancel }) => {
               </TabsList>
 
               <TabsContent value="friends" className="space-y-2">
-                {mockFriends
-                  .filter(friend => !dashboardData.collaborators.find(c => c.id === friend.id))
-                  .map(friend => (
-                    <div key={friend.id} className="flex items-center justify-between p-2 hover:bg-muted rounded">
+                {friends
+                  .filter(friend => !dashboardData.collaborators.find(c => c.userId === friend._id))
+                  .map(friend => {
+                    const {firstName, lastName, email, imageUrl, createdAt, _id:id} = friend
+                    const name = `${firstName} ${lastName}`;
+                    const initials = firstName[0]+lastName[0];
+                    return(
+                    <div key={id} className="flex items-center justify-between p-2 hover:bg-muted rounded">
                       <div className="flex items-center gap-3">
                         <Avatar className="h-6 w-6">
-                          <AvatarImage src={friend.avatar || "/placeholder.svg"} />
+                          <AvatarImage src={imageUrl} />
                           <AvatarFallback className="text-xs">
-                            {friend.name
-                              .split(" ")
-                              .map(n => n[0])
-                              .join("")}
+                            {initials}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="text-sm font-medium">{friend.name}</p>
-                          <p className="text-xs text-muted-foreground">{friend.email}</p>
+                          <p className="text-sm font-medium">{name}</p>
+                          <p className="text-xs text-muted-foreground">{email}</p>
                         </div>
                       </div>
-                      <Button size="sm" variant="outline" onClick={() => addCollaborator(friend)} className={"cursor-pointer"}>
+                      <Button size="sm" variant="outline" onClick={() => addCollaborator(friend,'friend')} className={"cursor-pointer"}>
                         <Plus className="h-3 w-3 mr-1" />
                         Add
                       </Button>
                     </div>
-                  ))}
+                  )
+                  })}
               </TabsContent>
 
               <TabsContent value="teams" className="space-y-2">
-                {mockTeams
-                  .filter(team => !dashboardData.collaborators.find(c => c.id === team.id))
+                {teams
+                  .filter(team => !dashboardData.collaborators.find(c => c.teamId === team._id))
                   .map(team => (
-                    <div key={team.id} className="flex items-center justify-between p-2 hover:bg-muted rounded">
+                    <div key={team._id} className="flex items-center justify-between p-2 hover:bg-muted rounded">
                       <div className="flex items-center gap-3">
                         <Avatar className="h-6 w-6">
-                          <AvatarImage src={team.avatar || "/placeholder.svg"} />
+                          <AvatarImage src={team.imageUrl} />
                           <AvatarFallback className="text-xs">
                             <Building className="h-4 w-4" />
                           </AvatarFallback>
                         </Avatar>
                         <div>
                           <p className="text-sm font-medium">{team.name}</p>
-                          <p className="text-xs text-muted-foreground">{team.members} members</p>
+                          <p className="text-xs text-muted-foreground">{team.members.length} members</p>
                         </div>
                       </div>
-                      <Button size="sm" variant="outline" onClick={() => addCollaborator(team)} className={"cursor-pointer"}>
+                      <Button size="sm" variant="outline" onClick={() => addCollaborator(team,'team')} className={"cursor-pointer"}>
                         <Plus className="h-3 w-3 mr-1" />
                         Add Team
                       </Button>
@@ -172,12 +140,10 @@ const Step1BasicInfo = ({ onCancel }) => {
         </div>
 
         <div className="flex justify-between">
-          <Button variant="outline" onClick={onCancel} className={"cursor-pointer"}>
-            Cancel
-          </Button>
-          <Button onClick={handleNext} disabled={!dashboardData.title.trim() || isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {isLoading ? "Processing..." : "Next"}
+          <CancelButton/>
+          <Button onClick={handleNext} disabled={!dashboardData.title.trim() || loading} className={'cursor-pointer'}>
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {loading ? "Processing..." : "Next"}
           </Button>
         </div>
       </CardContent>

@@ -10,12 +10,13 @@ export const authEndpoints = {
 
 export const dashboardEndpoints = {
     CREATE_DASHBOARD_API: BASE_URL + '/dashboard/create',
-    STEP1_API: BASE_URL + '/dashboard/step1',
-    UPLOAD_CSV_API: BASE_URL + '/dashboard/step2/upload-csv',
-    CONNECTAPI_API: BASE_URL + '/dashboard/step2/connectAPI',
-    SIMULATE_DATA_API: BASE_URL + '/dashboard/step2/simulate-data',
-    PUBLISH_DASHBOARD_API: BASE_URL + '/dashboard/publish',
-    GET_ALL_DASHBOARD_API: BASE_URL + '/dashboard/getAll'
+    STEP1_API: BASE_URL + '/dashboard/step1/',
+    UPLOAD_CSV_API: BASE_URL + '/dashboard/step2/upload-csv/',
+    CONNECTAPI_API: BASE_URL + '/dashboard/step2/connectAPI/',
+    SIMULATE_DATA_API: BASE_URL + '/dashboard/step2/simulate-data/',
+    PUBLISH_DASHBOARD_API: BASE_URL + '/dashboard/publish/',
+    GET_ALL_DASHBOARD_API: BASE_URL + '/dashboard/getAll',
+    DELETE_DASHBOARD_API: BASE_URL + '/dashboard/delete/',
 }
 
 export const friendsEndpoints = {
