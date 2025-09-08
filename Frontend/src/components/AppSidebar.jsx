@@ -56,16 +56,7 @@ const menuItems = [
 
 
 const AppSidebar = () => {
-    const {setDashboardId} = useDashboardStore();
-    const handleCreateDashboardClick = async() => {
-        try{
-            const result = await createDashboard();
-            console.log(result)
-            setDashboardId(result.dashboardId);
-        }catch(error){
-            toast.error("Error While Creating Dashboard");
-        }
-    }
+    const { handleCreateDashboardClick } = useDashboardStore();
     return (
     <Sidebar collapsible="icon" className="border-r border-border bg-background text-foreground min-w-[64px] sticky top-0 z-20">
         <SidebarHeader className="py-4 px-6 z-10">

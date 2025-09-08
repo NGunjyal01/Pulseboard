@@ -70,10 +70,10 @@ const dashboardSchema = new mongoose.Schema({
       sampleData: [mongoose.Schema.Types.Mixed]
     }
   },
-  visualizations: [{
+  charts: [{
     type: {
       type: String,
-      enum: ['line', 'bar', 'area', 'pie', 'radar', 'composed'],
+      enum: ['line', 'bar', 'area', 'composed'],
       required: true,
       default: 'line'
     },
@@ -83,7 +83,8 @@ const dashboardSchema = new mongoose.Schema({
       default: 'unamed'
     },
     dataMapping: {
-      xAxis: { type: String, required: true , default: 'none'}
+      xAxis: { type: String},
+      yAxis: {type: String}
     },
     // ✅ For all normal charts: just list values to plot
     values: [String],

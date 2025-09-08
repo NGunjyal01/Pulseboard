@@ -1,25 +1,24 @@
-// src/components/dashboard/CreateDashboard/Step3ConfigureCharts.jsx
-import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Plus } from 'lucide-react';
+import { Plus, Loader2 } from 'lucide-react';
 import ChartConfigForm from './ChartConfigForm';
 import useDashboardStore from '@/store/useDashboardStore';
-import { publishDashboard } from '@/services/dashboardAPI';
-import { toast } from 'sonner';
 import { useNavigate } from 'react-router';
 import CancelButton from './CancelButton';
 
 const Step3ConfigureCharts = () => {
-  const [isLoading,setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const {dashboardId,dashboardData,setDashboardData,resetDashboardData,handleBack:onBack} = useDashboardStore();
+  const {dashboardData,setDashboardData,handleBack:onBack,handleCreate,loading} = useDashboardStore();
+
   const addChart = () => {
     const newChart = {
       id: `chart-${Date.now()}`,
       title: `Chart ${dashboardData.charts.length + 1}`,
       type: "line",
+      xAxis: "",
+      values: [],
+      series: []
     };
     setDashboardData({
       charts: [...dashboardData.charts, newChart],
@@ -40,18 +39,17 @@ const Step3ConfigureCharts = () => {
     });
   };
 
-  const handleCreate = async()=>{
-    setIsLoading(true);
-    try {
-      const updatedFields = {visualizations: dashboardData.charts}
-      await publishDashboard(dashboardId,updatedFields,navigate);
-      resetDashboardData();
-    } catch (error) {
-      toast.error("Error While Publishing Dashboard");
-    }finally{
-      setIsLoading(false);
-    }
-  }
+  const isChartsValid = dashboardData.charts.length > 0 &&
+    dashboardData.charts.every(chart => {
+      if (["line", "bar", "area"].includes(chart.type)) {
+        return chart.xAxis && chart.values && chart.values.length > 0;
+      }
+      if (chart.type === "composed") {
+        return chart.xAxis && chart.composedConfig && chart.composedConfig.length > 0 &&
+              chart.composedConfig.every(series => series.value && series.viewType);
+      }
+      return false; // Invalid chart type
+  });
 
   return (
     <Card>
@@ -94,18 +92,10 @@ const Step3ConfigureCharts = () => {
         <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg">
           <h4 className="font-medium mb-2">Dashboard Summary</h4>
           <div className="text-sm text-muted-foreground space-y-1">
-            <p>
-              <strong>Title:</strong> {dashboardData.title}
-            </p>
-            <p>
-              <strong>Data Source:</strong> {dashboardData.dataSource}
-            </p>
-            <p>
-              <strong>Charts:</strong> {dashboardData.charts.length} configured
-            </p>
-            <p>
-              <strong>Collaborators:</strong> {dashboardData.collaborators.length} invited
-            </p>
+            <p><strong>Title:</strong> {dashboardData.title}</p>
+            <p><strong>Data Source:</strong> {dashboardData.dataSource}</p>
+            <p><strong>Charts:</strong> {dashboardData.charts.length} configured</p>
+            <p><strong>Collaborators:</strong> {dashboardData.collaborators.length} invited</p>
           </div>
         </div>
 
@@ -115,9 +105,12 @@ const Step3ConfigureCharts = () => {
             <Button variant="outline" onClick={onBack}>
               Back
             </Button>
-            <Button onClick={handleCreate} disabled={dashboardData.charts.length === 0 || isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isLoading ? "Processing..." : "Create Dashboard"}
+            <Button 
+              onClick={()=>handleCreate(navigate)} 
+              disabled={!isChartsValid || loading}
+            >
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {loading ? "Processing..." : "Create Dashboard"}
             </Button>
           </div>
         </div>
@@ -125,6 +118,5 @@ const Step3ConfigureCharts = () => {
     </Card>
   );
 };
-
 
 export default Step3ConfigureCharts;

@@ -8,9 +8,11 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useNavigate } from "react-router";
 import useDashboardListStore from "@/store/useDashboardListStore";
 import { getAllDashboard } from "@/services/dashboardAPI";
+import useDashboardStore from "@/store/useDashboardStore";
 
 const Dashboards = () => {
     const {dashboards,setDashboards} = useDashboardListStore();
+    const { handleCreateDashboardClick } = useDashboardStore();
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredDashboards, setFilteredDashboards] = useState(dashboards);
     const [viewMode, setViewMode] = useState('grid');
@@ -78,7 +80,7 @@ const Dashboards = () => {
                 >
                     <List className="w-4 h-4" />
                 </Button>
-                <Button className="gap-2 cursor-pointer" onClick={()=> navigate('/createDashboard')}>
+                <Button className="gap-2 cursor-pointer" onClick={()=> {handleCreateDashboardClick(); navigate('/createDashboard')}}>
                     <Plus className="w-4 h-4" />
                     Create Dashboard
                 </Button>
@@ -88,7 +90,7 @@ const Dashboards = () => {
         {/* Search Input */}
         {isMobile && <div className="flex flex-col gap-6">
             <div className="">
-                <Button className="gap-2 cursor-pointer" onClick={()=> navigate('/createDashboard')}>
+                <Button className="gap-2 cursor-pointer" onClick={()=> {handleCreateDashboardClick(); navigate('/createDashboard')}}>
                     <Plus className="w-4 h-4" />
                     Create Dashboard
                 </Button>

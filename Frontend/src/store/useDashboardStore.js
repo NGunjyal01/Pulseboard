@@ -1,5 +1,5 @@
 import { sampleDatasets } from '@/components/dashboard/CreateDashboard/constants';
-import { deleteDashboard, updateStep1BasicInfo, updateStep2DataSource } from '@/services/dashboardAPI';
+import { createDashboard, deleteDashboard, publishDashboard, updateStep1BasicInfo, updateStep2DataSource } from '@/services/dashboardAPI';
 import { toast } from 'sonner';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -56,6 +56,18 @@ const useDashboardStore = create(
             handleBack: () => { 
                 const {step,setStep} = get();
                 step > 1 && setStep(step - 1)
+            },
+            handleCreateDashboardClick: async() => {
+                const {setDashboardId} = get();
+                set({loading:true});
+                try{
+                    const result = await createDashboard();
+                    setDashboardId(result.dashboardId);
+                }catch(error){
+                    toast.error("Error While Creating Dashboard");
+                } finally {
+                    set({loading:false});
+                }
             },
             deleteDashboard: async()=>{
                 set({loading:true});
@@ -152,7 +164,9 @@ const useDashboardStore = create(
                     if (collaborators) updatedFields.collaborators = collaborators;
                     console.log(dashboardId,updatedFields)
                     await updateStep1BasicInfo(dashboardId,updatedFields);
-                    step < 3 && setStep(step + 1);
+                    if(step<3){
+                        setStep(step+1);
+                    }
                 }catch(error){
                     // toast.error("Error while step1");
                 }finally{
@@ -237,6 +251,18 @@ const useDashboardStore = create(
                   }
                 }
             },
+            handleCreate: async(navigate)=> {
+                const { dashboardId,dashboardData,resetDashboardData} = get();
+                set({loading:true});
+                try {
+                    const result = await publishDashboard(dashboardId, {charts:dashboardData.charts}, navigate);
+                    if(result.success)resetDashboardData();
+                } catch (error) {
+                    
+                } finally {
+                    set({loading:false})
+                }
+            }
         }),
         {
             name: 'dashboard-creation',

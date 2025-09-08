@@ -96,6 +96,7 @@ const connectAPI = async (req, res) => {
           dataPath,
           responseSnapshot:data,
         },},
+        'creationProgress.step2': true,
       $unset:{
         'dataSource.csvConfig':'',
         'dataSource.simulatedConfig':'',
@@ -146,10 +147,10 @@ const simulateData = async (req, res) => {
 
 const publishDashboard = async (req, res) => {
   try {
-    const { visualizations } = req.body;
+    const { charts } = req.body;
     const validTypes = ['line', 'bar', 'area', 'composed'];
     
-    for (const viz of visualizations) {
+    for (const viz of charts) {
       if (!validTypes.includes(viz.type)) {
         return res.status(400).json({
           success: false,
@@ -160,7 +161,7 @@ const publishDashboard = async (req, res) => {
 
     const dashboard = await Dashboard.findByIdAndUpdate(req.params.id,{
       status: 'published',
-      visualizations
+      charts
     },{ new: true });
     
     if (!dashboard) {

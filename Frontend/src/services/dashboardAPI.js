@@ -106,6 +106,7 @@ export const publishDashboard = async(dashboardId,updatedFields,navigate)=>{
         }
         else{
             toast.success("Dashboard Created Successfully");
+            navigate("/dashboards");
             return response.data;
         }
     }
@@ -116,8 +117,6 @@ export const publishDashboard = async(dashboardId,updatedFields,navigate)=>{
         else{
             console.log("Error During Publishing Dashboard: ",error);
         }
-    }finally{
-        navigate("/dashboards");
     }
 }
 
