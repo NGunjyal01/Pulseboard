@@ -8,6 +8,7 @@ const updateBasicInfo = require("../controllers/dashboard/updateBasicInfo");
 const { uploadCSV,connectAPI,simulateData,publishDashboard } = require("../controllers/dashboard/updateDataSource");
 const getAll = require("../controllers/dashboard/getAll");
 const deleteDashboard = require("../controllers/dashboard/deleteDashboard");
+const getDetails = require("../controllers/dashboard/getDetails");
 
 router.post('/create',createDashboard);
 router.put('/step1/:id',updateBasicInfo);
@@ -17,5 +18,6 @@ router.post('/step2/simulate-data/:id',simulateData);
 router.post('/publish/:id',publishDashboard);
 router.get('/getAll',getAll);
 router.delete('/delete/:id',deleteDashboard);
+router.post('/getDetails/:dashboardId',getDetails);
 
 module.exports = router;

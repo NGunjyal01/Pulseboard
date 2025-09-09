@@ -11,6 +11,7 @@ const ChartConfigForm = ({ config, columnOptions, onUpdate, onRemove }) => {
     const [selectedValues, setSelectedValues] = useState(config.values || []);
     const chartType = chartTypes.find(t => t.id === config.type);
     const validColumnOptions = columnOptions.filter(opt => opt && opt.trim() !== "");
+    console.log(config)
 
     useEffect(() => {
         if (config.type === "composed" && !config.composedConfig) {
@@ -60,14 +61,14 @@ const ChartConfigForm = ({ config, columnOptions, onUpdate, onRemove }) => {
         if (type === "composed") {
             onUpdate(config.id, {
             type,
-            xAxis: undefined,
+            'dataMapping.xAxis': undefined,
             values: [],
             composedConfig: [],
             });
         } else {
             onUpdate(config.id, {
             type,
-            xAxis: undefined,
+            'dataMapping.xAxis': undefined,
             values: [],
             composedConfig: undefined,
             });
@@ -130,15 +131,10 @@ const ChartConfigForm = ({ config, columnOptions, onUpdate, onRemove }) => {
             {/* X-Axis Field */}
             <div className="space-y-2">
                 <Label>X-Axis Field</Label>
-                <Select
-                value={config.xAxis || ""}
-                onValueChange={(xAxis) => onUpdate(config.id, { xAxis })}
+                <Select value={config.dataMapping.xAxis || ""}
+                  onValueChange={(xAxis) => onUpdate(config.id, { dataMapping: {...config.dataMapping,xAxis: xAxis}})}
                 >
-                <SelectTrigger
-                    className={`cursor-pointer ${
-                    !config.xAxis ? "border-red-500" : ""
-                    }`}
-                >
+                <SelectTrigger className={`cursor-pointer`}>
                     <SelectValue placeholder="Select X-axis field" />
                 </SelectTrigger>
                 <SelectContent>
@@ -169,7 +165,7 @@ const ChartConfigForm = ({ config, columnOptions, onUpdate, onRemove }) => {
                     .filter(
                         (field) =>
                         !selectedValues.includes(field) &&
-                        field !== config.xAxis // exclude xAxis
+                        field !== config.dataMapping.xAxis // exclude xAxis
                     )
                     .map((field) => (
                         <SelectItem key={field} value={field}>
@@ -207,12 +203,11 @@ const ChartConfigForm = ({ config, columnOptions, onUpdate, onRemove }) => {
         <>
             <div className="space-y-2">
             <Label>X-Axis Field (Shared)</Label>
-            <Select
-                value={config.xAxis || ""}
-                onValueChange={(xAxis) => onUpdate(config.id, { xAxis })}
+            <Select value={config.dataMapping.xAxis || ""}
+                onValueChange={(xAxis) => onUpdate(config.id, { dataMapping: { ...config.dataMapping, xAxis: xAxis }})}
             >
                 <SelectTrigger
-                className={`cursor-pointer ${!config.xAxis ? "border-red-500" : ""}`}
+                className={`cursor-pointer`}
                 >
                 <SelectValue placeholder="Select shared X-axis field" />
                 </SelectTrigger>
@@ -281,7 +276,7 @@ const ChartConfigForm = ({ config, columnOptions, onUpdate, onRemove }) => {
                     <SelectContent>
                         {validColumnOptions
                         // remove xAxis if selected
-                        .filter(field => !config.xAxis || field !== config.xAxis)
+                        .filter(field => !config.dataMapping.xAxis || field !== config.dataMapping.xAxis)
                         // remove already selected by other series
                         .filter(field => !config.composedConfig?.some((s, i) => i !== index && s.value === field))
                         .map(field => (

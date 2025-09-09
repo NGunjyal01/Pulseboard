@@ -48,8 +48,7 @@ const Dashboards = () => {
         }
     };
     const handleDashboardClick = (id) => {
-        console.log("Opening dashboard:", id);
-        // TODO: Implement navigation
+        navigate(`/dashboard/${id}`);
     };
 
     return (
@@ -133,7 +132,7 @@ const Dashboards = () => {
                 <DashboardCard
                 key={dashboard._id}
                 {...dashboard}
-                onClick={() => handleDashboardClick(dashboard.id)}
+                onClick={() => handleDashboardClick(dashboard._id)}
                 />
             ))}
             </div>

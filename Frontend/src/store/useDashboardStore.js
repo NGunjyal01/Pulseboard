@@ -1,5 +1,5 @@
 import { sampleDatasets } from '@/components/dashboard/CreateDashboard/constants';
-import { createDashboard, deleteDashboard, publishDashboard, updateStep1BasicInfo, updateStep2DataSource } from '@/services/dashboardAPI';
+import { createDashboard, deleteDashboard, getDashboardDetails, publishDashboard, updateStep1BasicInfo, updateStep2DataSource } from '@/services/dashboardAPI';
 import { toast } from 'sonner';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -261,6 +261,19 @@ const useDashboardStore = create(
                     
                 } finally {
                     set({loading:false})
+                }
+            },
+            fetchDashboardDetails: async(dashboardId) =>{
+                set({loading:true});
+                try {
+                    const data = await getDashboardDetails(dashboardId);
+                    if(data.success){
+                        set({dashboardData:data.dashboardDetails,dashboardId:dashboardId});
+                    }
+                } catch (err) {
+                    
+                } finally {
+                    set({loading:false});
                 }
             }
         }),

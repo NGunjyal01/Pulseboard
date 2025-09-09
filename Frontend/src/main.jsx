@@ -15,6 +15,7 @@ import TeamDetails from './pages/TeamDetails'
 import PrivateRoute from './components/PrivateRoute'
 import OpenRoute from './components/OpenRoute'
 import Settings from './pages/Settings'
+import DashboardDetails from './pages/DashboardDetails'
 
 // 🟢 Apply theme + mode before app renders
 const themeData = localStorage.getItem('pulseboard-theme');
@@ -48,6 +49,7 @@ createRoot(document.getElementById('root')).render(
         <Route path='/signup' element={<OpenRoute><Signup/></OpenRoute>} />
         <Route path='/dashboards' element={<PrivateRoute><Dashboards/></PrivateRoute>}/>
         <Route path='/createDashboard' element={<PrivateRoute><CreateDashboard/></PrivateRoute>}/>
+        <Route path='/dashboard/:dashboardId' element={<PrivateRoute><DashboardDetails/></PrivateRoute>}/>
         <Route path='/friends' element={<PrivateRoute><Friends/></PrivateRoute>}/>
         <Route path='/teams' element={<PrivateRoute><Teams/></PrivateRoute>}/>
         <Route path='/createTeam' element={<PrivateRoute><CreateTeam/></PrivateRoute>}/>

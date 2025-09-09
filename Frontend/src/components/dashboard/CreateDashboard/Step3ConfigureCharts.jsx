@@ -16,6 +16,10 @@ const Step3ConfigureCharts = () => {
       id: `chart-${Date.now()}`,
       title: `Chart ${dashboardData.charts.length + 1}`,
       type: "line",
+      dataMapping:{
+        xAxis:'',
+        yAxis:'',
+      },
       xAxis: "",
       values: [],
       series: []
@@ -42,10 +46,10 @@ const Step3ConfigureCharts = () => {
   const isChartsValid = dashboardData.charts.length > 0 &&
     dashboardData.charts.every(chart => {
       if (["line", "bar", "area"].includes(chart.type)) {
-        return chart.xAxis && chart.values && chart.values.length > 0;
+        return chart.dataMapping.xAxis && chart.values && chart.values.length > 0;
       }
       if (chart.type === "composed") {
-        return chart.xAxis && chart.composedConfig && chart.composedConfig.length > 0 &&
+        return chart.dataMapping.xAxis && chart.composedConfig && chart.composedConfig.length > 0 &&
               chart.composedConfig.every(series => series.value && series.viewType);
       }
       return false; // Invalid chart type

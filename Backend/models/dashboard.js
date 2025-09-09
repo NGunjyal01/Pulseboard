@@ -60,8 +60,8 @@ const dashboardSchema = new mongoose.Schema({
         default: '' // optional, can be empty if root array
       },
       responseSnapshot: {
-        type: mongoose.Schema.Types.Mixed,
-        default: {}
+        type: [mongoose.Schema.Types.Mixed],
+        default: []
       }
     },
     simulatedConfig: {

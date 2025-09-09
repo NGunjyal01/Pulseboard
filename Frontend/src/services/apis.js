@@ -17,6 +17,7 @@ export const dashboardEndpoints = {
     PUBLISH_DASHBOARD_API: BASE_URL + '/dashboard/publish/',
     GET_ALL_DASHBOARD_API: BASE_URL + '/dashboard/getAll',
     DELETE_DASHBOARD_API: BASE_URL + '/dashboard/delete/',
+    GET_DASHBOARD_DETAILS_API: BASE_URL + '/dashboard/getDetails/',
 }
 
 export const friendsEndpoints = {
