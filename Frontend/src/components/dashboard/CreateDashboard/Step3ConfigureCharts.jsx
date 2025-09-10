@@ -3,13 +3,13 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Plus, Loader2 } from 'lucide-react';
 import ChartConfigForm from './ChartConfigForm';
-import useDashboardStore from '@/store/useDashboardStore';
+import useCreateDashboardStore from '@/store/useCreateDashboardStore';
 import { useNavigate } from 'react-router';
 import CancelButton from './CancelButton';
 
 const Step3ConfigureCharts = () => {
   const navigate = useNavigate();
-  const {dashboardData,setDashboardData,handleBack:onBack,handleCreate,loading} = useDashboardStore();
+  const {dashboardData,setDashboardData,handleBack:onBack,handleCreate,loading} = useCreateDashboardStore();
 
   const addChart = () => {
     const newChart = {

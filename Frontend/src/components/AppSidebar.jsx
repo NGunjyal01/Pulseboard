@@ -11,7 +11,7 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar";
 import { createDashboard } from "@/services/dashboardAPI";
-import useDashboardStore from "@/store/useDashboardStore";
+import useCreateDashboardStore from "@/store/useCreateDashboardStore";
 
 import {
   LayoutDashboard,
@@ -56,7 +56,7 @@ const menuItems = [
 
 
 const AppSidebar = () => {
-    const { handleCreateDashboardClick } = useDashboardStore();
+    const { handleCreateDashboardClick } = useCreateDashboardStore();
     return (
     <Sidebar collapsible="icon" className="border-r border-border bg-background text-foreground min-w-[64px] sticky top-0 z-20">
         <SidebarHeader className="py-4 px-6 z-10">

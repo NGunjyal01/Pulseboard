@@ -31,30 +31,24 @@ export const mockComments = [
 ]
 
 const DashboardDetails = () => {
-    const { dashboardId } = useParams();
-    const { fetchDashboardDetails,loading } = useDashboardStore();
-    const [dashboardTitle, setDashboardTitle] = useState("Sales Performance Q4")
-    const [isEditing, setIsEditing] = useState(false)
-    const [newComment, setNewComment] = useState("")
-    const [activeTab, setActiveTab] = useState("comments")
+  const { dashboardId } = useParams();
+  const { fetchDashboardDetails,loading,fetched,resetDashboardDetails } = useDashboardStore();
+  const [dashboardTitle, setDashboardTitle] = useState("Sales Performance Q4")
+  const [isEditing, setIsEditing] = useState(false)
+  const [activeTab, setActiveTab] = useState("comments")
 
-    const handleTitleSave = () => {
-        setIsEditing(false)
-        // Save title logic here
+  const handleTitleSave = () => {
+    setIsEditing(false)
+    // Save title logic here
+  }
+
+  useEffect(() => {
+    if (dashboardId) {
+      fetchDashboardDetails(dashboardId); // always fetch when visiting page
     }
-
-    const handleAddComment = () => {
-        if (newComment.trim()) {
-            // Add comment logic here
-            setNewComment("")
-        }
-    }
-
-    useEffect(()=>{
-        console.log('fetching')
-        fetchDashboardDetails(dashboardId);
-    },[]);
-    if(loading)    return<div>Loading</div>
+    return(()=>resetDashboardDetails())
+  }, [dashboardId]);
+    if(loading&&!fetched)    return<div>Loading</div>
 
     return (
     <div className="min-h-screen bg-background text-foreground">
@@ -75,10 +69,6 @@ const DashboardDetails = () => {
         <DashboardSidebar
             activeTab={activeTab}
             onTabChange={setActiveTab}
-            comments={mockComments}
-            newComment={newComment}
-            onCommentChange={setNewComment}
-            onAddComment={handleAddComment}
         />
         </div>
     </div>

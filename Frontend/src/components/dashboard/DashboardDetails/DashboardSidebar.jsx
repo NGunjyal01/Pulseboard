@@ -3,14 +3,7 @@ import CommentsTab from "./CommentsTab"
 import AnnotationsTab from "./AnnotationsTab"
 import ActivityTab from "./ActivityTab"
 
-const DashboardSidebar = ({
-  activeTab,
-  onTabChange,
-  comments,
-  newComment,
-  onCommentChange,
-  onAddComment
-}) => {
+const DashboardSidebar = ({ activeTab, onTabChange }) => {
     return (
     <div className="w-80 border-l bg-card">
         <Tabs value={activeTab} onValueChange={onTabChange} className="h-full">
@@ -27,12 +20,7 @@ const DashboardSidebar = ({
         </TabsList>
 
         <TabsContent value="comments" className="flex-1 p-4 space-y-4">
-            <CommentsTab 
-            comments={comments}
-            newComment={newComment}
-            onCommentChange={onCommentChange}
-            onAddComment={onAddComment}
-            />
+            <CommentsTab/>
         </TabsContent>
 
         <TabsContent value="annotations" className="flex-1 p-4">

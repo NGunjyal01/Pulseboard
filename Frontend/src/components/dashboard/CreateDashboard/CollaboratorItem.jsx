@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Building, Users, X } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
-import useDashboardStore from '@/store/useDashboardStore';
+import useCreateDashboardStore from '@/store/useCreateDashboardStore';
 
 const CollaboratorItem = ({ collaborator }) => {
 
-  const { removeCollaborator,updateCollaboratorRole } = useDashboardStore();
+  const { removeCollaborator,updateCollaboratorRole } = useCreateDashboardStore();
 
   return (
     <div className="flex items-center justify-between p-3 border rounded-lg">

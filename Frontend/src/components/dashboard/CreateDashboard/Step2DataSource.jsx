@@ -5,14 +5,14 @@ import { Upload, Link, Database, Eye, Loader2 } from 'lucide-react';
 import { sampleDatasets } from './constants';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import useDashboardStore from "@/store/useDashboardStore";
+import useCreateDashboardStore from "@/store/useCreateDashboardStore";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import CancelButton from "./CancelButton";
 
 const Step2DataSource = () => {
   const {dashboardData,setDashboardData,step,setStep,loading,handleDataSourceChange,
     handleApiPreview,handleFileUpload,handleSimulatedData,handleBack:onBack
-  } = useDashboardStore();
+  } = useCreateDashboardStore();
   const handleNext = () => step < 3 && setStep(step + 1);
 
   const handleRemoveCsvFile = ()=>{

@@ -27,6 +27,7 @@ const io = new Server(server, {
 
 //middlewares
 const userAuth = require("./middleware/userAuth");
+const { addComment } = require("./controllers/dashboard/addComment");
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -34,14 +35,26 @@ app.use(cookieParser());
 io.on('connection', (socket) => {
   console.log(`Socket connected: ${socket.id}`);
 
-  socket.on('join-dashboard', (dashboardId) => {
+  socket.on('join_dashboard', (dashboardId) => {
     socket.join(dashboardId);
-    console.log(`User joined dashboard: ${dashboardId}`);
+    console.log(`User ${socket.id} joined dashboard: ${dashboardId}`);
   });
 
-  socket.on('chart-update', ({ dashboardId, chartId, newData }) => {
-    // Broadcast updated data to other users in the same room
-    socket.to(dashboardId).emit('receive-chart-update', { chartId, newData });
+  socket.on("new_comment", async (data) => {
+    const { dashboardId, comment } = data;
+    try {
+      const savedComment = await addComment(data);
+      // Broadcast to all clients in the same dashboard room
+      io.to(dashboardId).emit("new_comment", savedComment);
+    } catch (err) {
+      socket.emit("error", { message: "Failed to save comment" });
+    }
+  });
+
+  socket.on("new_annotation", async (data) => {
+    const { dashboardId, annotation } = data;
+
+    io.to(dashboardId).emit("new_annotation", annotation);
   });
 
   socket.on('disconnect', () => {

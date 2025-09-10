@@ -4,11 +4,11 @@ import ProgressIndicator from '@/components/dashboard/CreateDashboard/ProgessInd
 import Step1BasicInfo from '@/components/dashboard/CreateDashboard/Step1BasicInfo';
 import Step2DataSource from '@/components/dashboard/CreateDashboard/Step2DataSource';
 import Step3ConfigureCharts from '@/components/dashboard/CreateDashboard/Step3ConfigureCharts';
-import useDashboardStore from '@/store/useDashboardStore';
+import useCreateDashboardStore from '@/store/useCreateDashboardStore';
 import { useNavigate } from "react-router";
 
 const CreateDashboardPage = () => {
-  const {step,resetDashboardData} = useDashboardStore();
+  const {step,resetDashboardData} = useCreateDashboardStore();
   const navigate = useNavigate();
 
   return (

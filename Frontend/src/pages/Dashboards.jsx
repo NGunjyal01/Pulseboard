@@ -8,11 +8,11 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useNavigate } from "react-router";
 import useDashboardListStore from "@/store/useDashboardListStore";
 import { getAllDashboard } from "@/services/dashboardAPI";
-import useDashboardStore from "@/store/useDashboardStore";
+import useCreateDashboardStore from "@/store/useCreateDashboardStore";
 
 const Dashboards = () => {
     const {dashboards,setDashboards} = useDashboardListStore();
-    const { handleCreateDashboardClick } = useDashboardStore();
+    const { handleCreateDashboardClick } = useCreateDashboardStore();
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredDashboards, setFilteredDashboards] = useState(dashboards);
     const [viewMode, setViewMode] = useState('grid');

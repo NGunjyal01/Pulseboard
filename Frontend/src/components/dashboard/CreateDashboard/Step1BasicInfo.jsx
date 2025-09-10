@@ -8,7 +8,7 @@ import CollaboratorItem from './CollaboratorItem';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import useDashboardStore from '@/store/useDashboardStore';
+import useCreateDashboardStore from '@/store/useCreateDashboardStore';
 import useFriendsStore from '@/store/useFriendsStore';
 import { useTeamsStore } from '@/store/useTeamsStore';
 import CancelButton from './CancelButton';
@@ -18,7 +18,7 @@ const Step1BasicInfo = () => {
   const { friends,fetchFriends } = useFriendsStore();
   const { teams,fetchTeams } = useTeamsStore();
 
-  const { dashboardData,setDashboardData,addCollaborator,completeStep1:handleNext,loading } = useDashboardStore();
+  const { dashboardData,setDashboardData,addCollaborator,completeStep1:handleNext,loading } = useCreateDashboardStore();
 
   useEffect(()=>{
     fetchFriends();

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
-import useDashboardStore from "@/store/useDashboardStore";
+import useCreateDashboardStore from "@/store/useCreateDashboardStore";
 import { Loader2, XCircle, Save } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
@@ -8,7 +8,7 @@ import { useNavigate } from "react-router";
 const CancelButton = () => {
     const [open, setOpen] = useState(false);
 
-    const { resetDashboardData,deleteDashboard,loading } = useDashboardStore();
+    const { resetDashboardData,deleteDashboard,loading } = useCreateDashboardStore();
     const navigate = useNavigate();
 
     const handleSaveDraft = () => {
