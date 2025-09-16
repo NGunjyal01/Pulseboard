@@ -2,7 +2,7 @@ import axios from "@/utils/axiosConfig";;
 import { toast } from "sonner";
 import { dashboardEndpoints } from "./apis";
 
-const {CREATE_DASHBOARD_API,STEP1_API,UPLOAD_CSV_API,CONNECTAPI_API,DELETE_DASHBOARD_API,GET_DASHBOARD_DETAILS_API,
+const {CREATE_DASHBOARD_API,STEP1_API,UPLOAD_CSV_API,CONNECTAPI_API,DELETE_DASHBOARD_API,GET_DASHBOARD_DETAILS_API,GET_COMMENTS_API,GET_ANNOTATIONS_API,
     SIMULATE_DATA_API,PUBLISH_DASHBOARD_API,GET_ALL_DASHBOARD_API } = dashboardEndpoints;
 const config ={
   withCredentials: true
@@ -186,6 +186,50 @@ export const getDashboardDetails = async(dashboardId)=>{
         }
         else{
             console.log("Error During Fetching Dashboard Details: ",error);
+        }
+    }
+}
+
+export const getComments = async(dashboardId)=>{
+    try {
+        const response = await axios.get(`${GET_COMMENTS_API}${dashboardId}`,config);
+        console.log("GET COMMENTS API...................",response);
+        if(!response.data.success){
+            const error = new Error(response.data.message);
+            error.code = "CustomError";
+            throw error;
+        }
+        else{
+            return response.data;
+        }
+    } catch (error) {
+        if(error.code==="CustomError"){
+            toast.error(error.message);
+        }
+        else{
+            console.log("Error During Fetching Dashboard Comments: ",error);
+        }
+    }
+}
+
+export const getAnnotations = async(dashboardId)=>{
+    try {
+        const response = await axios.get(`${GET_ANNOTATIONS_API}${dashboardId}`,config);
+        console.log("GET ANNOTATIONS API...................",response);
+        if(!response.data.success){
+            const error = new Error(response.data.message);
+            error.code = "CustomError";
+            throw error;
+        }
+        else{
+            return response.data;
+        }
+    } catch (error) {
+        if(error.code==="CustomError"){
+            toast.error(error.message);
+        }
+        else{
+            console.log("Error During Fetching Dashboard Annotations: ",error);
         }
     }
 }

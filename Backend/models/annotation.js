@@ -42,7 +42,8 @@ const annotationSchema = new mongoose.Schema({
             message: props => `Invalid position for annotation type: ${JSON.stringify(props.value)}`
         }
     },
-    label: { type: String }
+    label: { type: String },
+    color: { type: String }
 }, { timestamps: true });
 
 module.exports = mongoose.model("Annotation", annotationSchema);

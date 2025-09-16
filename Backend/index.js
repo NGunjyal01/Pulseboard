@@ -28,6 +28,7 @@ const io = new Server(server, {
 //middlewares
 const userAuth = require("./middleware/userAuth");
 const { addComment } = require("./controllers/dashboard/addComment");
+const addAnnotation = require("./controllers/dashboard/addAnnotation");
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -41,7 +42,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on("new_comment", async (data) => {
-    const { dashboardId, comment } = data;
+    const { dashboardId } = data;
     try {
       const savedComment = await addComment(data);
       // Broadcast to all clients in the same dashboard room
@@ -52,9 +53,13 @@ io.on('connection', (socket) => {
   });
 
   socket.on("new_annotation", async (data) => {
-    const { dashboardId, annotation } = data;
-
-    io.to(dashboardId).emit("new_annotation", annotation);
+    const { dashboardId } = data;
+    try {
+      const savedAnnotation = await addAnnotation(data);
+      io.to(dashboardId).emit("new_annotation", savedAnnotation);
+    } catch (err) {
+      socket.emit("error", { message: "Failed to save annotation" });
+    }
   });
 
   socket.on('disconnect', () => {

@@ -4,13 +4,57 @@ import { LineChart, Line, BarChart, Bar, AreaChart, Area, ComposedChart, Cartesi
 
 const ChartGrid = () => {
 
-    const { dashboardDetails,fetched } = useDashboardStore();
+    const { dashboardDetails,fetched,dataSample:data,annotations } = useDashboardStore();
     if(!fetched)  return;
-    const { dataSource,charts } = dashboardDetails;
-    let data;
-    if(dataSource.type==='csv') data = dataSource.csvConfig.parsedData;
-    else if(dataSource.type==='api') data = dataSource.apiConfig.responseSnapshot;
-    else data = dataSource.simulatedConfig.sampleData;
+    const { charts } = dashboardDetails;
+
+    const renderAnnotations = (chartId) => {
+      const chartAnnotations = annotations.filter(a => a.chartId === chartId);
+      console.log(chartAnnotations)
+      return chartAnnotations.map((a, i) => {
+        if (a.type === "line") {
+          return (
+            <ReferenceLine
+              key={i}
+              x={a.position?.x}
+              y={a.position?.y}
+              stroke={a.color || "red"}
+              label={a.label}
+              strokeDasharray="3 3"
+            />
+          );
+        }
+        if (a.type === "point") {
+          return (
+            <ReferenceDot
+              key={i}
+              x={a.position?.x}
+              y={a.position?.y}
+              r={6}
+              fill={a.color || "blue"}
+              stroke="none"
+              label={a.label}
+            />
+          );
+        }
+        if (a.type === "area") {
+          return (
+            <ReferenceArea
+              key={i}
+              x1={a.position?.x1}
+              x2={a.position?.x2}
+              y1={a.position?.y1}
+              y2={a.position?.y2}
+              stroke={a.color || "green"}
+              fill={a.color || "green"}
+              fillOpacity={0.2}
+              label={a.label}
+            />
+          );
+        }
+        return null;
+      });
+    };
 
     return (
     <div className="grid grid-cols-1 gap-4">
@@ -30,6 +74,7 @@ const ChartGrid = () => {
                     <Tooltip />
                     <Legend />
                     {chart.values?.map((val, i) => <Line key={i} type="monotone" dataKey={val} stroke="#8884d8" strokeWidth={2} dot={false}/>)}
+                    {renderAnnotations(chart._id)}
                   </LineChart>
               </ResponsiveContainer>
             )}
@@ -43,6 +88,7 @@ const ChartGrid = () => {
                     <Tooltip />
                     <Legend />
                     {chart.values?.map((val, i) => <Bar key={i} dataKey={val} fill="#82ca9d" barSize={20}/>)}
+                    {renderAnnotations(chart._id)}
                   </BarChart>
               </ResponsiveContainer>
             )}
@@ -56,6 +102,7 @@ const ChartGrid = () => {
                     <Tooltip />
                     <Legend />
                     {chart.values?.map((val, i) => <Area key={i} type="monotone" dataKey={val} stroke="#8884d8" fill="#8884d8" fillOpacity={0.3}/>)}
+                    {renderAnnotations(chart._id)}
                   </AreaChart>
               </ResponsiveContainer>
             )}
@@ -77,6 +124,7 @@ const ChartGrid = () => {
                         return <Area key={i} type="monotone" dataKey={cfg.value} stroke="#ffc658" fill="#ffc658" fillOpacity={0.3}/>
                         return null;
                     })}
+                    {renderAnnotations(chart._id)}
                   </ComposedChart>
               </ResponsiveContainer>
             )}

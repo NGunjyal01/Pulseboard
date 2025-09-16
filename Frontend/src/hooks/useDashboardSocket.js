@@ -34,7 +34,8 @@ export const useDashboardSocket = (dashboardId) => {
     };
 
     const sendAnnotation = (annotation) => {
-        socket.emit("new_annotation", { dashboardId, annotation });
+        const newAnnotation = {...annotation,user:user._id}
+        socket.emit("new_annotation", { dashboardId, annotation:newAnnotation });
     };
 
     return { sendComment, sendAnnotation };

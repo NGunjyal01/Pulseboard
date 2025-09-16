@@ -9,6 +9,8 @@ const { uploadCSV,connectAPI,simulateData,publishDashboard } = require("../contr
 const getAll = require("../controllers/dashboard/getAll");
 const deleteDashboard = require("../controllers/dashboard/deleteDashboard");
 const getDetails = require("../controllers/dashboard/getDetails");
+const getComments = require("../controllers/dashboard/getComments");
+const getAnnotations = require("../controllers/dashboard/getAnnotations");
 
 router.post('/create',createDashboard);
 router.put('/step1/:id',updateBasicInfo);
@@ -19,5 +21,7 @@ router.post('/publish/:id',publishDashboard);
 router.get('/getAll',getAll);
 router.delete('/delete/:id',deleteDashboard);
 router.post('/getDetails/:dashboardId',getDetails);
+router.get('/getComments/:dashboardId',getComments);
+router.get('/getAnnotations/:dashboardId',getAnnotations);
 
 module.exports = router;

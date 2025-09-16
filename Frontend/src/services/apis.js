@@ -18,6 +18,8 @@ export const dashboardEndpoints = {
     GET_ALL_DASHBOARD_API: BASE_URL + '/dashboard/getAll',
     DELETE_DASHBOARD_API: BASE_URL + '/dashboard/delete/',
     GET_DASHBOARD_DETAILS_API: BASE_URL + '/dashboard/getDetails/',
+    GET_COMMENTS_API: BASE_URL + '/dashboard/getComments/',
+    GET_ANNOTATIONS_API: BASE_URL + '/dashboard/getAnnotations/',
 }
 
 export const friendsEndpoints = {

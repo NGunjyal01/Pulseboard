@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { useDashboardSocket } from "@/hooks/useDashboardSocket"
 import useDashboardStore from "@/store/useDashboardStore"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { formatDistanceToNow } from "date-fns"
 
 const CommentsTab = () => {

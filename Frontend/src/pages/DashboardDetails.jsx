@@ -11,24 +11,6 @@ export const mockCollaborators = [
   { id: 3, name: "Alex Rivera", avatar: "/placeholder.svg?height=32&width=32", isOnline: false },
 ]
 
-export const mockComments = [
-  {
-    id: 1,
-    user: "Sarah Chen",
-    avatar: "/placeholder.svg?height=32&width=32",
-    message: "The Q4 numbers look great! Revenue is up 23% from last quarter.",
-    timestamp: "2 hours ago",
-    chartId: "sales-chart",
-  },
-  {
-    id: 2,
-    user: "Mike Johnson",
-    avatar: "/placeholder.svg?height=32&width=32",
-    message: "Should we add a breakdown by region?",
-    timestamp: "1 hour ago",
-    chartId: "sales-chart",
-  },
-]
 
 const DashboardDetails = () => {
   const { dashboardId } = useParams();

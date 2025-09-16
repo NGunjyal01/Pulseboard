@@ -1,10 +1,11 @@
-import { getDashboardDetails } from "@/services/dashboardAPI";
+import { getAnnotations, getComments, getDashboardDetails } from "@/services/dashboardAPI";
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 const useDashboardStore = create(persist((set,get)=>({
     dashboardId:null,
     dashboardDetails:{},
+    dataSample:[],
     comments:[],
     annotations:[],
     loading:false,
@@ -12,9 +13,24 @@ const useDashboardStore = create(persist((set,get)=>({
     fetchDashboardDetails: async(dashboardId) =>{
         set({loading:true});
         try {
-            const data = await getDashboardDetails(dashboardId);
-            if(data.success){
-                set({dashboardDetails:data.dashboardDetails,dashboardId:dashboardId,fetched:true});
+            const [dashboardRes, commentsRes, annotationsRes] = await Promise.all([
+                getDashboardDetails(dashboardId),
+                getComments(dashboardId),
+                getAnnotations(dashboardId),
+            ]);
+            console.log(annotationsRes)
+            if(dashboardRes.success && commentsRes.success && annotationsRes.success){
+                const {dashboardDetails:dd} = dashboardRes;
+                const {dataSource} = dd;
+                let dataSample;
+                if(dataSource.type==='csv') dataSample = dataSource.csvConfig.parsedData;
+                else if(dataSource.type==='api') dataSample = dataSource.apiConfig.responseSnapshot;
+                else dataSample = dataSource.simulatedConfig.sampleData;
+                set({dashboardDetails:dd,
+                    comments:commentsRes.comments,
+                    annotations:annotationsRes.annotations,
+                    dashboardId:dashboardId,fetched:true,dataSample
+                });
             }
         } catch (err) {
             
