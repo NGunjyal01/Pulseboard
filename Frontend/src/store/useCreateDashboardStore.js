@@ -69,9 +69,8 @@ const useCreateDashboardStore = create(
                     set({loading:false});
                 }
             },
-            deleteDashboard: async()=>{
+            deleteDashboard: async(dashboardId)=>{
                 set({loading:true});
-                const {dashboardId} = get();
                 try {
                     await deleteDashboard(dashboardId)
                     return true;
@@ -242,7 +241,7 @@ const useCreateDashboardStore = create(
                       dataFields: fields,
                       parsedData: preview,
                     });
-                    const updatedFields = {dataSource:'simulated',type:name,sampleData:preview}
+                    const updatedFields = {dataSource:'simulated',type:name,sampleData:preview,dataFields:fields}
                     await updateStep2DataSource(dashboardId,updatedFields);
                   } catch (error) {
                     

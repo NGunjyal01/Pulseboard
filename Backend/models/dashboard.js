@@ -68,7 +68,8 @@ const dashboardSchema = new mongoose.Schema({
       type: { type: String, 
         enum: ['Sales Performance', 'Marketing Analytics', 'User Engagement', 'Financial Metrics', 'Inventory Status', 'Support Tickets', 'A/B Testing', 'Shipping Performance', 'SaaS Metrics', 'Social Media Analytics'] },
       sampleData: [mongoose.Schema.Types.Mixed]
-    }
+    },
+    dataFields:[mongoose.Schema.Types.Mixed]
   },
   charts: [{
     type: {

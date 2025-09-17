@@ -23,7 +23,7 @@ const ThemeToggle = () => {
             variant="ghost"
             size="icon"
             onClick={toggleMode}
-            className="p-2 rounded-md bg-muted text-foreground hover:bg-muted/70 transition-all duration-300"
+            className="p-2 rounded-md bg-muted text-foreground hover:bg-muted/70 transition-all duration-300 cursor-pointer"
         >
         {mode === "dark" ? (
             <Sun className="w-5 h-5" />
@@ -38,7 +38,7 @@ const ThemeToggle = () => {
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="p-2 rounded-md bg-muted text-foreground hover:bg-muted/70 transition-all duration-300"
+                    className="p-2 rounded-md bg-muted text-foreground hover:bg-muted/70 transition-all duration-300 cursor-pointer"
                 >
                 <Palette className="w-5 h-5" />
                 </Button>
@@ -48,7 +48,7 @@ const ThemeToggle = () => {
                     <button
                         key={t.name}
                         onClick={() => setTheme(t.name)}
-                        className={`${t.color} w-6 h-6 rounded-full border-2 border-white hover:scale-110 transition-all`}
+                        className={`${t.color} w-6 h-6 rounded-full border-2 border-white hover:scale-110 transition-all cursor-pointer`}
                         title={t.name}
                     />
                 ))}

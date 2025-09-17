@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { authEndpoints } from "./apis";
 import useAuthStore from "@/store/useAuthStore";
 
-const {SIGNUP_API, LOGIN_API} = authEndpoints;
+const {SIGNUP_API, LOGIN_API, LOGOUT_API} = authEndpoints;
 
 export const signup = async(formData,navigate)=>{
     try{
@@ -57,6 +57,30 @@ export const login = async(formData,navigate)=>{
             console.log("Error During Login.................",error);
             toast.error("Login Failed");
             navigate('/login');
+        }
+    }
+}
+
+export const logout = async()=>{
+    try{
+        const response = await axios.post(LOGOUT_API,{},{withCredentials:true});
+        console.log("LOGOUT API RESPONSE..............",response);
+        if(!response.data.success){
+            const error = new Error(response.data.message);
+            error.code = "CustomError";
+            throw error;
+        }
+        else{
+            toast.success("Logout Successful");
+        }
+    }
+    catch(error){
+        if(error.code==="CustomError"){
+            toast.error(error.message);
+        }
+        else{
+            console.log("Error During Login.................",error);
+            toast.error("Logout Failed");
         }
     }
 }

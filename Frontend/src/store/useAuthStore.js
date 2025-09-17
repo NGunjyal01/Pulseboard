@@ -1,3 +1,4 @@
+import { logout } from '@/services/authAPI';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -10,6 +11,10 @@ const useAuthStore = create(
             setUser: (user) => set({ user }),
 
             clearAuth: () => set({ user: null }),
+            logout: async() => {
+                await logout();
+                set({ user: null })
+            }
         }),
         {
             name: "user", // 🔐 Key in localStorage

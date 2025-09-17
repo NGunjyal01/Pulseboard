@@ -1,14 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
 import useCreateDashboardStore from "@/store/useCreateDashboardStore";
-import { Loader2, XCircle, Save } from "lucide-react";
+import { Loader2, XCircle, Save, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
-const CancelButton = () => {
+const CancelButton = ({title}) => {
     const [open, setOpen] = useState(false);
 
-    const { resetDashboardData,deleteDashboard,loading } = useCreateDashboardStore();
+    const { dashboardId,resetDashboardData,deleteDashboard,loading } = useCreateDashboardStore();
     const navigate = useNavigate();
 
     const handleSaveDraft = () => {
@@ -17,9 +17,10 @@ const CancelButton = () => {
     };
 
     const handleDiscard = async () => {
-        const result = await deleteDashboard();
+        const result = await deleteDashboard(dashboardId);
         if(result){
-            navigate('/dashboards')
+            resetDashboardData();
+            navigate('/dashboards');
         }
     };
 
@@ -27,8 +28,8 @@ const CancelButton = () => {
     return (
     <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-            <Button variant="outline" className="cursor-pointer">
-                Cancel
+            <Button variant={title==='cancel'?"outline":''} className={`cursor-pointer ${title==='dashboard' && 'absolute lg:py-5'}`}>
+                {title==='cancel'?'Cancel':<><ArrowLeft className="h-4 w-4 mr-2" />Back to Dashboard</>}
             </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[520px]">

@@ -3,14 +3,13 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import { createDashboard } from "@/services/dashboardAPI";
+import useAuthStore from "@/store/useAuthStore";
 import useCreateDashboardStore from "@/store/useCreateDashboardStore";
 
 import {
@@ -23,7 +22,7 @@ import {
   Users
 } from "lucide-react";
 
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 
 const menuItems = [
@@ -57,6 +56,19 @@ const menuItems = [
 
 const AppSidebar = () => {
     const { handleCreateDashboardClick } = useCreateDashboardStore();
+    const navigate = useNavigate();
+    const { logout } = useAuthStore();
+    const handleLogout = () => {
+        // clear localStorage
+        localStorage.removeItem("user");
+
+        // clear zustand state
+        logout();
+
+        // redirect
+        navigate("/login");
+    };
+
     return (
     <Sidebar collapsible="icon" className="border-r border-border bg-background text-foreground min-w-[64px] sticky top-0 z-20">
         <SidebarHeader className="py-4 px-6 z-10">
@@ -100,7 +112,7 @@ const AppSidebar = () => {
         <SidebarFooter className="p-4 border-t border-border">
         <SidebarMenu>
             <SidebarMenuItem>
-            <SidebarMenuButton className="text-destructive hover:bg-destructive/10 flex gap-2 items-center">
+            <SidebarMenuButton className="text-destructive flex gap-2 items-center cursor-pointer" onClick={handleLogout}>
                 <LogOut className="w-4 h-4" />
                 <span>Logout</span>
             </SidebarMenuButton>

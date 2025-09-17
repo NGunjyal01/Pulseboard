@@ -26,6 +26,8 @@ const uploadCSV =async (req, res) => {
       $set:{ 
         'dataSource.type': 'csv',
         'dataSource.csvConfig': {fileName:req.file.originalname,parsedData:data},
+        'creationProgress.step2':true,
+        'dataSource.dataFields':headers,
       },
       $unset:{
         'dataSource.apiConfig': '',
@@ -83,7 +85,6 @@ const connectAPI = async (req, res) => {
 
     // Extract field names
     const headers = data.length > 0 ? Object.keys(data[0]) : [];
-
     // Save API config in MongoDB
     await Dashboard.findByIdAndUpdate(req.params.id, {
       $set:{
@@ -126,6 +127,7 @@ const simulateData = async (req, res) => {
       $set:{
         'dataSource.type': 'simulated',
         'dataSource.simulatedConfig': { type, sampleData},
+        'creationProgress.step2':true
       },
       $unset:{
         'dataSource.csvConfig':'',
@@ -160,6 +162,7 @@ const publishDashboard = async (req, res) => {
     }
 
     const dashboard = await Dashboard.findByIdAndUpdate(req.params.id,{
+      'creationProgress.step3':true,
       status: 'published',
       charts
     },{ new: true });

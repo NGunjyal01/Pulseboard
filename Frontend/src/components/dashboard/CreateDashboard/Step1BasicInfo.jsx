@@ -140,7 +140,7 @@ const Step1BasicInfo = () => {
         </div>
 
         <div className="flex justify-between">
-          <CancelButton/>
+          <CancelButton title={'cancel'}/>
           <Button onClick={handleNext} disabled={!dashboardData.title.trim() || loading} className={'cursor-pointer'}>
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {loading ? "Processing..." : "Next"}

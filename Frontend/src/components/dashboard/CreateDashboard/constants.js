@@ -10,19 +10,6 @@ export const chartTypes = [
   // { id: "radar", name: "Radar Chart", icon: TrendingUp, description: "Multi-dimensional data" },
 ];
 
-export const mockFriends = [
-  { id: 1, name: "Sarah Chen", email: "sarah@company.com", avatar: "/placeholder.svg?height=32&width=32", type: "friend" },
-  { id: 2, name: "Mike Johnson", email: "mike@company.com", avatar: "/placeholder.svg?height=32&width=32", type: "friend" },
-  { id: 3, name: "Alex Rivera", email: "alex@company.com", avatar: "/placeholder.svg?height=32&width=32", type: "friend" },
-];
-
-
-export const mockTeams = [
-  { id: 101, name: "Sales Team", members: 8, avatar: "/placeholder.svg?height=32&width=32", type: "team" },
-  { id: 102, name: "Marketing Department", members: 12, avatar: "/placeholder.svg?height=32&width=32", type: "team" },
-  { id: 103, name: "Product Analytics", members: 5, avatar: "/placeholder.svg?height=32&width=32", type: "team" },
-];
-
 
 export const sampleDatasets = {
   sales: {

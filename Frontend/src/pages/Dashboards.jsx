@@ -129,11 +129,7 @@ const Dashboards = () => {
               : "space-y-4"
             }>
             {filteredDashboards.map((dashboard) => (
-                <DashboardCard
-                key={dashboard._id}
-                {...dashboard}
-                onClick={() => handleDashboardClick(dashboard._id)}
-                />
+                <DashboardCard key={dashboard._id} dashboard={dashboard}/>
             ))}
             </div>
         )}

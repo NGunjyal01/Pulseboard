@@ -7,14 +7,7 @@ import ThemeToggle from "@/components/ThemeToggle"
 import ChartTypeDropdown from "./ChartTypeDropDown"
 import { useNavigate } from "react-router"
 
-const DashboardHeader = ({
-  dashboardTitle,
-  isEditing,
-  onTitleChange,
-  onTitleSave,
-  onEditToggle,
-  collaborators,
-}) => {
+const DashboardHeader = ({ dashboardTitle, isEditing, onTitleChange, onTitleSave, onEditToggle, collaborators,}) => {
     const navigate = useNavigate();
     return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40">

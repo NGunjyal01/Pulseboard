@@ -104,7 +104,7 @@ const Step3ConfigureCharts = () => {
         </div>
 
         <div className="flex justify-between">
-          <CancelButton/>
+          <CancelButton title={'cancel'}/>
           <div className="flex gap-2">
             <Button variant="outline" onClick={onBack}>
               Back

@@ -4,30 +4,32 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Search, Bell, User, Settings, LogOut } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import ThemeToggle from "./ThemeToggle";
 import useAuthStore from "@/store/useAuthStore";
+import { useNavigate } from "react-router";
 
 const TopNavbar = () => {
-    const {user} = useAuthStore();
+    const {user,logout} = useAuthStore();
     const {firstName, lastName, email, imageUrl} = user;
     const [notifications] = useState(3);
     const isMobile = useIsMobile();
+    const navigate = useNavigate();
+    const handleLogout = () => {
+        localStorage.removeItem("user");
+        logout();
+        navigate("/login");
+  };
+
 
     return (
     <header className="sticky top-0 z-40 bg-background backdrop-blur-sm border-b border-border">
         <div className="flex items-center justify-between px-4 py-3">
         {/* Left Section: Sidebar + Search */}
         <div className="flex items-center gap-5">
-            <SidebarTrigger className="hover:bg-primary/10 rounded-md" />
+            <SidebarTrigger className="hover:bg-primary/10 rounded-md cursor-pointer" />
 
             {!isMobile && (
             <div className="relative w-[30vw] lg:w-[70vw] max-w-[450px]">
@@ -51,7 +53,7 @@ const TopNavbar = () => {
             <Bell className="w-4 h-4" />
             {notifications > 0 && (
                 <Badge className="absolute -top-1 -right-1 w-5 h-5 p-0 text-xs bg-destructive text-white rounded-full flex items-center justify-center">
-                {notifications}
+                    {notifications}
                 </Badge>
             )}
             </Button>
@@ -61,7 +63,7 @@ const TopNavbar = () => {
                 <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full hover:bg-primary/10"
+                className="rounded-full hover:bg-primary/10 cursor-pointer"
                 >
                 <Avatar className="size-8">
                     <AvatarImage src={imageUrl} alt="User" />
@@ -79,16 +81,16 @@ const TopNavbar = () => {
                 </div>
                 </div>
                 <DropdownMenuSeparator />
-                    <DropdownMenuItem className="">
+                    <DropdownMenuItem className="cursor-pointer" onClick={()=>navigate('/settings')}>
                         <User className="mr-2 h-4 w-4" />
                         Profile
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="hover:bg-primary/10">
+                    <DropdownMenuItem className="cursor-pointer" onClick={()=>navigate('/settings')}>
                         <Settings className="mr-2 h-4 w-4" />
                         Settings
                     </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive hover:bg-destructive/10">
+                <DropdownMenuItem className="text-destructive cursor-pointer" onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
                     Log out
                 </DropdownMenuItem>

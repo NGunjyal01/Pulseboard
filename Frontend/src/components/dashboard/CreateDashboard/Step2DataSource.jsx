@@ -18,7 +18,6 @@ const Step2DataSource = () => {
   const handleRemoveCsvFile = ()=>{
     setDashboardData({csvFileName:'', dataFields:[] , parsedData:null})
   }
-
   return (
     <Card>
       <CardHeader>
@@ -224,7 +223,7 @@ const Step2DataSource = () => {
         )}
 
         <div className="flex justify-between">
-          <CancelButton/>
+          <CancelButton title={'cancel'}/>
           <div className="flex gap-2">
             <Button variant="outline" onClick={onBack} className={"cursor-pointer"}>
               Back
