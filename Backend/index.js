@@ -16,6 +16,7 @@ const dashboardRoutes = require("./routes/dashboard");
 const friendsRoutes = require('./routes/friends');
 const friendRequestRoutes = require('./routes/friendRequest');
 const teamsRoutes = require("./routes/team");
+const settingsRoutes = require('./routes/settings');
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -72,7 +73,8 @@ app.use("/", authRoutes);
 app.use("/dashboard",userAuth,dashboardRoutes);
 app.use('/friends',userAuth,friendsRoutes);
 app.use("/friendRequest",userAuth,friendRequestRoutes);
-app.use("/teams",userAuth,teamsRoutes)
+app.use("/teams",userAuth,teamsRoutes);
+app.use('/settings',userAuth,settingsRoutes);
 
 const startServer = async () => {
   try {
