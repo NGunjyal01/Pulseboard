@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import ThemeToggle from "@/components/ThemeToggle"
-import ChartTypeDropdown from "./ChartTypeDropDown"
+import ChartTypeDropdown from "./ChartTypeDropdown"
 import { useNavigate } from "react-router"
 
 const DashboardHeader = ({ dashboardTitle, isEditing, onTitleChange, onTitleSave, onEditToggle, collaborators,}) => {
