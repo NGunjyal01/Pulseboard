@@ -132,7 +132,7 @@ const MyTeamsTab = () => {
             return (
                 <Card
                 key={id}
-                className="hover:shadow-md transition-shadow cursor-pointer"
+                className='cursor-pointer group relative overflow-hidden hover:shadow-xl hover:scale-[102%] ease-in-out transition-transform duration-300'
                 onClick={() => handleTeamClick(id)}
                 >
                 <CardHeader className="pb-3">

@@ -32,7 +32,7 @@ const CancelButton = ({title}) => {
                 {title==='cancel'?'Cancel':<><ArrowLeft className="h-4 w-4 mr-2" />Back to Dashboard</>}
             </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[520px]">
+        <DialogContent className="sm:max-w-[520px] text-foreground">
             <DialogHeader>
                 <DialogTitle>Save as draft or delete?</DialogTitle>
                 <DialogDescription>

@@ -45,3 +45,9 @@ export const teamsEndpoints = {
     CANCEL_INVITATION_API: BASE_URL + '/teams/cancelInvite',
     GET_ALL_INVITATIONS_API: BASE_URL + '/teams/getAllInvitations',
 }
+
+export const settingsEndpoints = {
+    UPDATE_PROFILE_API: BASE_URL + '/settings/updateProfile',
+    UPDATE_EMAIL_API: BASE_URL + '/settings/updateEmail',
+    UPDATE_PASSWORD_API: BASE_URL + '/settings/updatePassword',
+}

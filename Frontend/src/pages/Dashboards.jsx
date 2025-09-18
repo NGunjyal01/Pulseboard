@@ -118,7 +118,7 @@ const Dashboards = () => {
                 ? "Try adjusting your search terms"
                 : "Create your first dashboard to get started"}
             </p>
-            <Button className="gap-2">
+            <Button className="gap-2 cursor-pointer" onClick={()=> {handleCreateDashboardClick(); navigate('/createDashboard')}}>
                 <Plus className="w-4 h-4" />
                 Create Dashboard
             </Button>

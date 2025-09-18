@@ -55,7 +55,7 @@ export const login = async(formData,navigate)=>{
         }
         else{
             console.log("Error During Login.................",error);
-            toast.error("Login Failed");
+            toast.error(error.response.data.error);
             navigate('/login');
         }
     }

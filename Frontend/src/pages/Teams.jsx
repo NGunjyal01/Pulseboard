@@ -11,7 +11,7 @@ const Teams = ()=> {
   const navigate = useNavigate(); 
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground">
       <header className="border-b">
         <div className="flex h-16 items-center px-6">
           <Button size="sm" onClick={()=>navigate('/dashboards')} className={"absolute lg:py-5 cursor-pointer"}>

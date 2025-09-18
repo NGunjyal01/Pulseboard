@@ -8,16 +8,15 @@ import useAuthStore from "@/store/useAuthStore"
 import { useState } from "react"
 
 const ProfileTab = () => {
-    const { user, updateProfile } = useAuthStore();
+    const { user, updateProfile, loading } = useAuthStore();
     const { imageUrl, firstName: initialFirstName, lastName: initialLastName, email: initialEmail } = user;
     
     const [firstName, setFirstName] = useState(initialFirstName);
     const [lastName, setLastName] = useState(initialLastName);
-    const [email, setEmail] = useState(initialEmail);
     const [newImage, setNewImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(imageUrl);
     
-    const hasChanges = (firstName !== initialFirstName || lastName !== initialLastName || email !== initialEmail || newImage !== null);
+    const hasChanges = (firstName !== initialFirstName || lastName !== initialLastName  || newImage !== null);
 
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
@@ -45,23 +44,22 @@ const ProfileTab = () => {
         }
     };
 
-    const onSave = () => {
-        const updatedData = {};
-        
-        if (firstName !== initialFirstName) updatedData.firstName = firstName;
-        if (lastName !== initialLastName) updatedData.lastName = lastName;
-        if (email !== initialEmail) updatedData.email = email;
-        
-        // Call update function from store
-        updateProfile(updatedData, newImage);
-        
-        setNewImage(null);
+    const onSave = async () => {
+        const formData = new FormData();
+
+        if (firstName !== initialFirstName) formData.append("firstName", firstName);
+        if (lastName !== initialLastName) formData.append("lastName", lastName);
+        if (newImage) formData.append("imageUrl", newImage);
+
+        const result = await updateProfile(formData); // pass FormData, not plain object
+        if(result){
+            setNewImage(null);
+        }
     };
 
     const onCancel = () => {
         setFirstName(initialFirstName);
         setLastName(initialLastName);
-        setEmail(initialEmail);
         setNewImage(null);
         setImagePreview(imageUrl);
     };
@@ -88,7 +86,8 @@ const ProfileTab = () => {
                             <Button
                                 variant="destructive"
                                 size="icon"
-                                className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
+                                className="absolute -top-2 -right-2 h-6 w-6 rounded-full cursor-pointer"
+                                disabled={loading}
                                 onClick={removeImage}
                             >
                                 <X className="h-3 w-3" />
@@ -115,6 +114,7 @@ const ProfileTab = () => {
                             onChange={handleImageUpload}
                             accept="image/jpeg,image/png,image/gif"
                             className="hidden"
+                            disabled={loading}
                         />
                         <p className="text-sm text-muted-foreground mt-2">JPG, PNG or GIF. Max size 2MB.</p>
                     </div>
@@ -137,31 +137,19 @@ const ProfileTab = () => {
                             onChange={(e) => setLastName(e.target.value)}
                         />
                     </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="email">Email Address</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </div>
                 </div>
 
                 {hasChanges && (
                     <div className="flex justify-end gap-4">
-                        <Button 
-                            variant="destructive" 
-                            className="cursor-pointer" 
-                            onClick={onCancel}
-                        >
+                        {!loading && <Button variant="destructive" className="cursor-pointer"  onClick={onCancel}>
                             Cancel
-                        </Button>
+                        </Button>}
                         <Button 
                             className="cursor-pointer" 
                             onClick={onSave}
+                            disabled={loading}
                         >
-                            Save Changes
+                            {loading?'Saving...':'Save Changes'}
                         </Button>
                     </div>
                 )}

@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -7,13 +5,16 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { AlertCircle, CheckCircle2, Eye, EyeOff, Shield } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import useAuthStore from "@/store/useAuthStore"
 
 const AccountTab = ()=> {
+  const { user,loading,updatePassword,updateEmail } = useAuthStore();
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: ""
-  })
+  });
+  const [newEmail, setNewEmail] = useState('');
   const [showPasswords, setShowPasswords] = useState({
     current: false,
     new: false,
@@ -29,6 +30,10 @@ const AccountTab = ()=> {
     if (passwordErrors[id]) {
       setPasswordErrors(prev => ({ ...prev, [id]: "" }))
     }
+  }
+
+  const handleEmailChange = (e) =>{
+    setNewEmail(e.target.value)
   }
 
   const togglePasswordVisibility = (field) => {
@@ -58,11 +63,26 @@ const AccountTab = ()=> {
     return Object.keys(errors).length === 0
   }
 
-  const handlePasswordSubmit = (e) => {
+  const handleEmailSubmit = async(e) => {
+    e.preventDefault();
+    if(user.email===newEmail){
+      alert('Email is Same');
+      return;
+    }
+    const result = await updateEmail(newEmail);
+    if(result){
+      setNewEmail('');
+    }
+  }
+
+  const handlePasswordSubmit = async(e) => {
     e.preventDefault()
     
     if (!validatePasswordForm()) return
-    console.log('update password sucessfull')
+    const result = await updatePassword({currentPassword:passwordData.currentPassword,newPassword:passwordData.newPassword});
+    if(result){
+      setPasswordData({currentPassword: "",newPassword: "",confirmPassword: ""});
+    }
   }
 
   const handleDeleteAccount = () => {
@@ -73,6 +93,48 @@ const AccountTab = ()=> {
 
   return (
     <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Change Email</CardTitle>
+            <CardDescription>Update your account email</CardDescription>
+          </CardHeader>
+        <CardContent className="space-y-4">
+          <form onSubmit={handleEmailSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="currentEmail">Current Password</Label>
+              <div className="relative">
+                <Input
+                  id="currentEmail"
+                  type='text'
+                  value={user.email}
+                  disbaled={true}
+                  className={passwordErrors.currentPassword ? "border-destructive" : ""}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="newEmail">New Email</Label>
+              <div className="relative">
+                <Input
+                  id="newEmail"
+                  type={'text'}
+                  value={newEmail}
+                  onChange={handleEmailChange}
+                  // className={ ? "border-destructive" : ""}
+                />
+              </div>
+              {passwordErrors.newPassword && (
+                <p className="text-sm text-destructive">{passwordErrors.newPassword}</p>
+              )}
+            </div>
+
+            <Button type="submit" className={'cursor-pointer'}>
+              {loading?'Updating...':"Update Email"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
       <Card>
         <CardHeader>
           <CardTitle>Change Password</CardTitle>
