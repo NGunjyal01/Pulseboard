@@ -19,9 +19,13 @@ const teamsRoutes = require("./routes/team");
 const settingsRoutes = require('./routes/settings');
 
 const server = http.createServer(app);
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.FRONTEND_URL,
+];
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173', // client port
+    origin: allowedOrigins, // client port
     credentials: true,
   },  
 });
@@ -30,7 +34,7 @@ const io = new Server(server, {
 const userAuth = require("./middleware/userAuth");
 const { addComment } = require("./controllers/dashboard/addComment");
 const addAnnotation = require("./controllers/dashboard/addAnnotation");
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
