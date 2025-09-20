@@ -12,7 +12,7 @@ export const useDashboardSocket = (dashboardId) => {
 
     useEffect(() => {
         if (!socket) {
-            socket = io("http://localhost:4444");
+            socket = io("process.env.BASE_URL");
         }
 
         socket.emit("join_dashboard", dashboardId);

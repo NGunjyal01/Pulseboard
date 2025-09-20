@@ -1,5 +1,5 @@
 
-const BASE_URL = "http://localhost:4444";
+const BASE_URL = process.env.BASE_URL;
 
 export const authEndpoints = {
     SIGNUP_API: BASE_URL + '/signup',
