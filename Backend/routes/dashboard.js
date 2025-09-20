@@ -1,7 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer")
-const upload = multer({ storage: multer.memoryStorage() });
 
 const createDashboard = require("../controllers/dashboard/create");
 const updateBasicInfo = require("../controllers/dashboard/updateBasicInfo");
@@ -11,6 +9,7 @@ const deleteDashboard = require("../controllers/dashboard/deleteDashboard");
 const getDetails = require("../controllers/dashboard/getDetails");
 const getComments = require("../controllers/dashboard/getComments");
 const getAnnotations = require("../controllers/dashboard/getAnnotations");
+const upload = require("../middleware/upload");
 
 router.post('/create',createDashboard);
 router.put('/step1/:id',updateBasicInfo);
