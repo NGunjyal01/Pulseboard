@@ -35,6 +35,7 @@ export const signup = async(formData,navigate)=>{
 export const login = async(formData,navigate)=>{
     try{
         const response = await axios.post(LOGIN_API,formData,{withCredentials:true});
+        console.log('login api ',LOGIN_API)
         console.log("LOGIN API RESPONSE..............",response);
         if(!response.data.success){
             const error = new Error(response.data.message);
