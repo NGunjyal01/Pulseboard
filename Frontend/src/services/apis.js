@@ -1,5 +1,6 @@
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+console.log(process.env.NEXT_PUBLIC_BASE_URL);
 
 export const authEndpoints = {
     SIGNUP_API: BASE_URL + '/signup',
