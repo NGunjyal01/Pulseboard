@@ -10,7 +10,6 @@ const ChartGrid = () => {
 
     const renderAnnotations = (chartId) => {
       const chartAnnotations = annotations.filter(a => a.chartId === chartId);
-      console.log(chartAnnotations)
       return chartAnnotations.map((a, i) => {
         if (a.type === "line") {
           return (
@@ -57,7 +56,7 @@ const ChartGrid = () => {
     };
 
     return (
-    <div className="grid grid-cols-1 gap-4">
+    <div className="grid grid-cols-1 gap-4 w-full p-6">
       {charts.map((chart, index) => {
       return (
         <Card key={index} className="rounded-2xl shadow-md">

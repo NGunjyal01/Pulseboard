@@ -56,7 +56,7 @@ const CommentsTab = () => {
             className="min-h-[80px]"
             />
         </div>
-        <Button size="sm" className="mt-2 w-full" onClick={onAddComment} disabled={!newComment.trim()}>
+        <Button size="sm" className="mt-2 w-full cursor-pointer" onClick={onAddComment} disabled={!newComment.trim()}>
             <Send className="h-4 w-4 mr-2" />
             Send Comment
         </Button>

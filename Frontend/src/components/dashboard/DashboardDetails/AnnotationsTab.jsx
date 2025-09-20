@@ -261,12 +261,12 @@ const AnnotationsTab = () => {
 
             <Dialog open={isAnnotationDialogOpen} onOpenChange={setIsAnnotationDialogOpen}>
                 <DialogTrigger asChild>
-                    <Button variant="outline" className="w-full bg-transparent">
+                    <Button variant="outline" className="w-full bg-transparent cursor-pointer mt-4">
                         <StickyNote className="h-4 w-4 mr-2" />
                         Add Annotation
                     </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-md">
+                <DialogContent className="max-w-md text-foreground">
                     <DialogHeader>
                         <DialogTitle>Add Annotation</DialogTitle>
                         <DialogDescription>Add a visual annotation to highlight important data points</DialogDescription>

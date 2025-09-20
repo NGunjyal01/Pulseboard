@@ -1,42 +1,35 @@
-import { ArrowLeft, Download, Share2, BarChart3, Settings } from "lucide-react"
+import { ArrowLeft, Download, Share2, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import ThemeToggle from "@/components/ThemeToggle"
 import ChartTypeDropdown from "./ChartTypeDropdown"
 import { useNavigate } from "react-router"
+import useDashboardStore from "@/store/useDashboardStore"
 
-const DashboardHeader = ({ dashboardTitle, isEditing, onTitleChange, onTitleSave, onEditToggle, collaborators,}) => {
+export const collaborators = [
+  { id: 1, name: "Sarah Chen", avatar: "/placeholder.svg?height=32&width=32", isOnline: true },
+  { id: 2, name: "Mike Johnson", avatar: "/placeholder.svg?height=32&width=32", isOnline: true },
+  { id: 3, name: "Alex Rivera", avatar: "/placeholder.svg?height=32&width=32", isOnline: false },
+]
+
+const DashboardHeader = () => {
+    const { dashboardDetails } = useDashboardStore();
+    const {title} = dashboardDetails;
     const navigate = useNavigate();
     return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40">
         <div className="flex h-16 items-center px-6">
-        <Button variant="ghost" size="sm" onClick={() => navigate("/dashboards")}>
+        <Button size="sm" onClick={() => navigate("/dashboards")} className={'cursor-pointer lg:py-5'}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
+            Back to Dashboard
         </Button>
 
         <div className="flex-1 flex items-center justify-center">
-            {isEditing ? (
-            <div className="flex items-center gap-2">
-                <Input
-                value={dashboardTitle}
-                onChange={(e) => onTitleChange(e.target.value)}
-                className="text-lg font-semibold"
-                onBlur={onTitleSave}
-                onKeyDown={(e) => e.key === "Enter" && onTitleSave()}
-                autoFocus
-                />
-            </div>
-            ) : (
-            <h1
-                className="text-lg font-semibold cursor-pointer hover:text-primary"
-                onClick={onEditToggle}
-            >
-                {dashboardTitle}
+            <h1 className="text-lg font-semibold cursor-pointer uppercase">
+                {title}
             </h1>
-            )}
+        
         </div>
 
         <div className="flex items-center gap-4">
