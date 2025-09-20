@@ -21,9 +21,9 @@ const login = async (req, res) => {
         const token = jwt.sign({ id: user._id, email:user.email }, JWT_SECRET, { expiresIn: '7d' });
         return res.cookie("token", token, {
             httpOnly: true,
-            secure: false,         // false for localhost
-            sameSite: "lax",       // lax works fine for localhost
-            maxAge: 604800000,     // 7 days
+            secure: process.env.NODE_ENV === "production", // true on Render
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
             }).json({ 
             success:true,
             message: "Login Successful",

@@ -33,7 +33,6 @@ export const signup = async(formData,navigate)=>{
 }
 
 export const login = async(formData,navigate)=>{
-    console.log('login api ',LOGIN_API)
     try{
         const response = await axios.post(LOGIN_API,formData,{withCredentials:true});
         
